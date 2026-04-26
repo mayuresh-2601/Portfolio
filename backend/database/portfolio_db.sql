@@ -44,22 +44,5 @@ CREATE TABLE messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-show tables;
-
-INSERT INTO users (name, email, password)
-VALUES (
-  'Mayuresh',
-  'mayuresh44',
-  '$2b$10$iaja619oKN0mtbVO.IrZguHPJW/Ab3YOys5b1Dxc6NEkluVd0HrSO'
-);
-
-UPDATE users
-SET email = 'mayuresh44@gmail.com'
-WHERE id = 1;
-
-select * from projects;
-select * from skills;
-select * from users;
-select * from messages;
 
 
