@@ -4,11 +4,17 @@ import axios from "axios";
 
 const api = axios.create({
 
-  baseURL: "http://localhost:5000",
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:5000",
+
+  headers: {
+    "Content-Type": "application/json",
+  },
 
 });
 
-// Automatically attach token
+// Automatically attach JWT token
 
 api.interceptors.request.use(
 
@@ -29,7 +35,35 @@ api.interceptors.request.use(
   },
 
   (error) => {
+
     return Promise.reject(error);
+
+  }
+
+);
+
+// Handle global errors
+
+api.interceptors.response.use(
+
+  (response) => response,
+
+  (error) => {
+
+    if (error.response?.status === 401) {
+
+      console.warn(
+        "Unauthorized - token expired"
+      );
+
+      localStorage.removeItem("token");
+
+      window.location.href = "/admin";
+
+    }
+
+    return Promise.reject(error);
+
   }
 
 );

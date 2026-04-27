@@ -45,4 +45,5 @@ CREATE TABLE messages (
 );
 
 
+TRUNCATE TABLE skills;
 

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/immutability */
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import Github from "./Github";
 import { ExternalLink } from "lucide-react";
 
@@ -26,7 +26,7 @@ function Projects() {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(
+      const response = await api.get(
         "/api/projects"
       );
 
@@ -37,6 +37,8 @@ function Projects() {
       }
 
       setProjects(response.data);
+
+      console.log("Projects loaded");
 
     } catch (err) {
 

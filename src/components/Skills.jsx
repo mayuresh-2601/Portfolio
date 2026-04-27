@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/immutability */
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 function Skills() {
 
@@ -24,7 +24,7 @@ function Skills() {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(
+      const response = await api.get(
         "/api/skills"
       );
 
@@ -35,6 +35,8 @@ function Skills() {
       }
 
       setSkills(response.data);
+
+      console.log("Skills loaded");
 
     } catch (err) {
 

@@ -1,19 +1,24 @@
 import db from "../config/db.js";
 
+/*
+  SKILL MODEL
+  Uses mysql2 promise pool
+  Returns clean async results
+*/
+
 // ---------------- GET ALL SKILLS ----------------
 
 export const getAllSkills = async () => {
 
-  const sql = `
-    SELECT *
-    FROM skills
-    ORDER BY id DESC
-  `;
-
   try {
 
-    const [rows] =
-      await db.query(sql);
+    const sql = `
+      SELECT *
+      FROM skills
+      ORDER BY id DESC
+    `;
+
+    const [rows] = await db.query(sql);
 
     return rows;
 
@@ -34,12 +39,12 @@ export const getAllSkills = async () => {
 
 export const addSkill = async (name) => {
 
-  const sql = `
-    INSERT INTO skills (name)
-    VALUES (?)
-  `;
-
   try {
+
+    const sql = `
+      INSERT INTO skills (name)
+      VALUES (?)
+    `;
 
     const [result] =
       await db.query(sql, [name]);
@@ -63,12 +68,12 @@ export const addSkill = async (name) => {
 
 export const deleteSkill = async (id) => {
 
-  const sql = `
-    DELETE FROM skills
-    WHERE id = ?
-  `;
-
   try {
+
+    const sql = `
+      DELETE FROM skills
+      WHERE id = ?
+    `;
 
     const [result] =
       await db.query(sql, [id]);

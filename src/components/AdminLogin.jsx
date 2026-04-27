@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import { Mail, Lock } from "lucide-react";
 
 function AdminLogin() {
@@ -41,7 +41,7 @@ function AdminLogin() {
 
       console.log("Sending login request...");
 
-      const response = await axios.post(
+      const response = await api.post(
         "/api/auth/login",
         formData
       );

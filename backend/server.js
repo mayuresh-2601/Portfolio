@@ -1,6 +1,10 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import db from "./config/db.js";
 
@@ -17,48 +21,113 @@ dotenv.config();
 
 const app = express();
 
-// ---------------- CORS ----------------
+/*
+  Resolve directory path
+*/
 
-app.use(cors());
+const __filename =
+  fileURLToPath(import.meta.url);
 
-// ---------------- BODY PARSER ----------------
+const __dirname =
+  path.dirname(__filename);
+
+/*
+  CORS
+*/
+
+app.use(
+  cors({
+    origin: "*",
+    credentials: true
+  })
+);
+
+/*
+  Body Parser
+*/
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// ---------------- STATIC FILES ----------------
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
 
-app.use("/uploads", express.static("uploads"));
+/*
+  Static Upload Folder
+*/
 
-// ---------------- ROOT TEST ----------------
+const uploadsPath =
+  path.join(
+    __dirname,
+    "uploads"
+  );
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Backend server is running"
-  });
-});
+app.use(
+  "/uploads",
+  express.static(
+    uploadsPath
+  )
+);
 
-// ---------------- ROUTES ----------------
+/*
+  Root Test Route
+*/
 
-app.use("/api/auth", authRoutes);
+app.get(
+  "/",
+  (req, res) => {
 
-app.use("/api/projects", projectRoutes);
+    res.json({
+      message:
+        "Backend server is running"
+    });
 
-app.use("/api/skills", skillRoutes);
+  }
+);
 
-// ---------------- ERROR HANDLING ----------------
+/*
+  API Routes
+*/
+
+app.use(
+  "/api/auth",
+  authRoutes
+);
+
+app.use(
+  "/api/projects",
+  projectRoutes
+);
+
+app.use(
+  "/api/skills",
+  skillRoutes
+);
+
+/*
+  Error Handling Middleware
+*/
 
 app.use(notFound);
 
 app.use(errorHandler);
 
-// ---------------- SERVER ----------------
+/*
+  Server Start
+*/
 
 const PORT =
   process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(
-    `Server running on port ${PORT}`
-  );
-});
+app.listen(
+  PORT,
+  () => {
+
+    console.log(
+      `Server running on port ${PORT}`
+    );
+
+  }
+);

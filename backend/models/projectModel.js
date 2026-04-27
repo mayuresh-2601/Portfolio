@@ -1,16 +1,22 @@
 import db from "../config/db.js";
 
-// GET ALL PROJECTS
+/*
+  PROJECT MODEL
+  Uses mysql2 promise pool
+  Async / Await pattern
+*/
+
+// ---------------- GET ALL PROJECTS ----------------
 
 export const getAllProjects = async () => {
 
-  const sql = `
-    SELECT *
-    FROM projects
-    ORDER BY id DESC
-  `;
-
   try {
+
+    const sql = `
+      SELECT *
+      FROM projects
+      ORDER BY id DESC
+    `;
 
     const [rows] =
       await db.query(sql);
@@ -30,27 +36,33 @@ export const getAllProjects = async () => {
 
 };
 
-// ADD PROJECT
+// ---------------- ADD PROJECT ----------------
 
 export const addProject = async (project) => {
 
-  const sql = `
-    INSERT INTO projects
-    (title, description, github, demo, image)
-    VALUES (?, ?, ?, ?, ?)
-  `;
-
-  const values = [
-
-    project.title,
-    project.description,
-    project.github,
-    project.demo,
-    project.image
-
-  ];
-
   try {
+
+    const sql = `
+      INSERT INTO projects
+      (
+        title,
+        description,
+        github,
+        demo,
+        image
+      )
+      VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+
+      project.title || "",
+      project.description || "",
+      project.github || "",
+      project.demo || "",
+      project.image || null
+
+    ];
 
     const [result] =
       await db.query(sql, values);
@@ -70,16 +82,16 @@ export const addProject = async (project) => {
 
 };
 
-// DELETE PROJECT
+// ---------------- DELETE PROJECT ----------------
 
 export const deleteProject = async (id) => {
 
-  const sql = `
-    DELETE FROM projects
-    WHERE id = ?
-  `;
-
   try {
+
+    const sql = `
+      DELETE FROM projects
+      WHERE id = ?
+    `;
 
     const [result] =
       await db.query(sql, [id]);

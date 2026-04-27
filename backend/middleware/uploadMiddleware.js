@@ -1,13 +1,39 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { fileURLToPath } from "url";
+
+/*
+  UPLOAD MIDDLEWARE
+  Safe for Windows / Linux / Deployment
+*/
+
+// ---------------- Resolve Directory ----------------
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ---------------- Upload Folder Path ----------------
+
+const uploadPath = path.join(
+  __dirname,
+  "..",
+  "uploads"
+);
 
 // ---------------- Ensure Upload Folder Exists ----------------
 
-const uploadPath = "uploads";
-
 if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath);
+
+  fs.mkdirSync(
+    uploadPath,
+    { recursive: true }
+  );
+
+  console.log(
+    "Uploads folder created"
+  );
+
 }
 
 // ---------------- Storage Configuration ----------------
@@ -16,7 +42,10 @@ const storage = multer.diskStorage({
 
   destination: (req, file, cb) => {
 
-    cb(null, uploadPath);
+    cb(
+      null,
+      uploadPath
+    );
 
   },
 
@@ -25,10 +54,17 @@ const storage = multer.diskStorage({
     const uniqueName =
       Date.now() +
       "-" +
-      Math.round(Math.random() * 1e9) +
-      path.extname(file.originalname);
+      Math.round(
+        Math.random() * 1e9
+      ) +
+      path.extname(
+        file.originalname
+      );
 
-    cb(null, uniqueName);
+    cb(
+      null,
+      uniqueName
+    );
 
   }
 
@@ -36,18 +72,31 @@ const storage = multer.diskStorage({
 
 // ---------------- File Filter ----------------
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  req,
+  file,
+  cb
+) => {
 
   const allowedTypes = [
+
     "image/jpeg",
     "image/png",
     "image/jpg",
     "image/webp"
+
   ];
 
-  if (allowedTypes.includes(file.mimetype)) {
+  if (
+    allowedTypes.includes(
+      file.mimetype
+    )
+  ) {
 
-    cb(null, true);
+    cb(
+      null,
+      true
+    );
 
   } else {
 
@@ -72,7 +121,8 @@ const upload = multer({
 
   limits: {
 
-    fileSize: 5 * 1024 * 1024 // 5MB
+    fileSize:
+      5 * 1024 * 1024 // 5MB
 
   }
 

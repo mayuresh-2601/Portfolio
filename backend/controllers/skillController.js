@@ -4,34 +4,35 @@ import {
   deleteSkill
 } from "../models/skillModel.js";
 
+/*
+  SKILL CONTROLLER
+  Uses async/await
+  Matches mysql2 promise model
+*/
+
 // ---------------- GET ALL SKILLS ----------------
 
-export const fetchSkills = (req, res) => {
+export const fetchSkills = async (req, res) => {
 
   try {
 
-    getAllSkills((err, results) => {
+    const skills =
+      await getAllSkills();
 
-      if (err) {
-
-        console.error(err);
-
-        return res.status(500).json({
-          message: "Failed to fetch skills"
-        });
-
-      }
-
-      res.status(200).json(results);
-
-    });
+    return res.status(200).json(
+      skills
+    );
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Fetch skills error:",
+      error
+    );
 
-    res.status(500).json({
-      message: "Server error"
+    return res.status(500).json({
+      message:
+        "Failed to fetch skills"
     });
 
   }
@@ -40,7 +41,7 @@ export const fetchSkills = (req, res) => {
 
 // ---------------- CREATE SKILL ----------------
 
-export const createSkill = (req, res) => {
+export const createSkill = async (req, res) => {
 
   try {
 
@@ -54,43 +55,38 @@ export const createSkill = (req, res) => {
     if (!name || !name.trim()) {
 
       return res.status(400).json({
-        message: "Skill name is required"
+        message:
+          "Skill name is required"
       });
 
     }
 
-    // Default level if not provided
+    const skillLevel =
+      level || 80;
 
-    const skillLevel = level || 80;
+    const result =
+      await addSkill(
+        name,
+        skillLevel
+      );
 
-    addSkill(
-      name,
-      skillLevel,
-      (err) => {
-
-        if (err) {
-
-          console.error(err);
-
-          return res.status(500).json({
-            message: "Failed to add skill"
-          });
-
-        }
-
-        res.status(201).json({
-          message: "Skill added successfully"
-        });
-
-      }
-    );
+    return res.status(201).json({
+      message:
+        "Skill added successfully",
+      id:
+        result.insertId
+    });
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Create skill error:",
+      error
+    );
 
-    res.status(500).json({
-      message: "Server error"
+    return res.status(500).json({
+      message:
+        "Failed to add skill"
     });
 
   }
@@ -99,44 +95,39 @@ export const createSkill = (req, res) => {
 
 // ---------------- DELETE SKILL ----------------
 
-export const removeSkill = (req, res) => {
+export const removeSkill = async (req, res) => {
 
   try {
 
-    const id = req.params.id;
+    const { id } =
+      req.params;
 
     if (!id) {
 
       return res.status(400).json({
-        message: "Skill ID is required"
+        message:
+          "Skill ID is required"
       });
 
     }
 
-    deleteSkill(id, (err) => {
+    await deleteSkill(id);
 
-      if (err) {
-
-        console.error(err);
-
-        return res.status(500).json({
-          message: "Failed to delete skill"
-        });
-
-      }
-
-      res.status(200).json({
-        message: "Skill deleted successfully"
-      });
-
+    return res.status(200).json({
+      message:
+        "Skill deleted successfully"
     });
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Delete skill error:",
+      error
+    );
 
-    res.status(500).json({
-      message: "Server error"
+    return res.status(500).json({
+      message:
+        "Failed to delete skill"
     });
 
   }

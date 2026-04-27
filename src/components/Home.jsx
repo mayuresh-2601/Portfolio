@@ -77,7 +77,7 @@ function Home() {
             </Link>
 
             <a
-              href="/resume.pdf"
+              href="/Mayuresh_Kasar_Resume.pdf"
               download
               className="px-6 py-3 border border-sky-500 hover:bg-sky-500 rounded-lg font-medium transition"
             >

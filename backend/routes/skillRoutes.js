@@ -6,20 +6,34 @@ import {
   removeSkill
 } from "../controllers/skillController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import {
+  protect
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// ---------------- GET ALL SKILLS ----------------
-// Public route
+/*
+  SKILL ROUTES
+  Base URL:
+  /api/skills
+*/
+
+/*
+  GET ALL SKILLS
+  Public route
+  GET /api/skills
+*/
 
 router.get(
   "/",
   fetchSkills
 );
 
-// ---------------- CREATE SKILL ----------------
-// Protected route
+/*
+  CREATE SKILL
+  Protected route
+  POST /api/skills
+*/
 
 router.post(
   "/",
@@ -27,8 +41,11 @@ router.post(
   createSkill
 );
 
-// ---------------- DELETE SKILL ----------------
-// Protected route
+/*
+  DELETE SKILL
+  Protected route
+  DELETE /api/skills/:id
+*/
 
 router.delete(
   "/:id",

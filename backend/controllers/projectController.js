@@ -4,32 +4,35 @@ import {
   deleteProject
 } from "../models/projectModel.js";
 
+/*
+  PROJECT CONTROLLER
+  Async / Await pattern
+  Compatible with mysql2 promise
+*/
+
 // ---------------- GET ALL PROJECTS ----------------
 
-export const fetchProjects = (req, res) => {
+export const fetchProjects = async (req, res) => {
 
   try {
 
-    getAllProjects((err, results) => {
+    const projects =
+      await getAllProjects();
 
-      if (err) {
-        console.error(err);
-
-        return res.status(500).json({
-          message: "Failed to fetch projects"
-        });
-      }
-
-      res.status(200).json(results);
-
-    });
+    return res.status(200).json(
+      projects
+    );
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Fetch projects error:",
+      error
+    );
 
-    res.status(500).json({
-      message: "Server error"
+    return res.status(500).json({
+      message:
+        "Failed to fetch projects"
     });
 
   }
@@ -38,7 +41,7 @@ export const fetchProjects = (req, res) => {
 
 // ---------------- CREATE PROJECT ----------------
 
-export const createProject = (req, res) => {
+export const createProject = async (req, res) => {
 
   try {
 
@@ -54,21 +57,19 @@ export const createProject = (req, res) => {
     if (!title || !description) {
 
       return res.status(400).json({
-        message: "Title and description are required"
+        message:
+          "Title and description are required"
       });
 
     }
 
-    // Get uploaded image filename
+    // Handle uploaded image
 
     const project = {
 
       title,
-
       description,
-
       github,
-
       demo,
 
       image: req.file
@@ -77,30 +78,29 @@ export const createProject = (req, res) => {
 
     };
 
-    addProject(project, (err) => {
+    const result =
+      await addProject(project);
 
-      if (err) {
+    return res.status(201).json({
 
-        console.error(err);
+      message:
+        "Project added successfully",
 
-        return res.status(500).json({
-          message: "Failed to add project"
-        });
-
-      }
-
-      res.status(201).json({
-        message: "Project added successfully"
-      });
+      id:
+        result.insertId
 
     });
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Create project error:",
+      error
+    );
 
-    res.status(500).json({
-      message: "Server error"
+    return res.status(500).json({
+      message:
+        "Failed to add project"
     });
 
   }
@@ -109,44 +109,39 @@ export const createProject = (req, res) => {
 
 // ---------------- DELETE PROJECT ----------------
 
-export const removeProject = (req, res) => {
+export const removeProject = async (req, res) => {
 
   try {
 
-    const id = req.params.id;
+    const { id } =
+      req.params;
 
     if (!id) {
 
       return res.status(400).json({
-        message: "Project ID is required"
+        message:
+          "Project ID is required"
       });
 
     }
 
-    deleteProject(id, (err) => {
+    await deleteProject(id);
 
-      if (err) {
-
-        console.error(err);
-
-        return res.status(500).json({
-          message: "Failed to delete project"
-        });
-
-      }
-
-      res.status(200).json({
-        message: "Project deleted successfully"
-      });
-
+    return res.status(200).json({
+      message:
+        "Project deleted successfully"
     });
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Delete project error:",
+      error
+    );
 
-    res.status(500).json({
-      message: "Server error"
+    return res.status(500).json({
+      message:
+        "Failed to delete project"
     });
 
   }

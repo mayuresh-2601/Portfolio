@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/immutability */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/immutability */
 
 import { useState, useEffect } from "react";
 import api from "../api/axios";
@@ -19,7 +19,9 @@ function AdminDashboard() {
   });
 
   const [skillName, setSkillName] = useState("");
+
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -30,6 +32,8 @@ function AdminDashboard() {
   const loadData = async () => {
 
     try {
+
+      setInitialLoading(true);
 
       const [projectsRes, skillsRes] =
         await Promise.all([
@@ -45,7 +49,15 @@ function AdminDashboard() {
     } catch (error) {
 
       console.error(error);
-      alert("Failed to load data");
+
+      alert(
+        error.response?.data?.message ||
+        "Failed to load data"
+      );
+
+    } finally {
+
+      setInitialLoading(false);
 
     }
 
@@ -115,7 +127,7 @@ function AdminDashboard() {
         formData
       );
 
-      alert("Project added");
+      alert("Project added successfully");
 
       setProjectForm({
         title: "",
@@ -165,7 +177,10 @@ function AdminDashboard() {
 
       console.error(error);
 
-      alert("Delete failed");
+      alert(
+        error.response?.data?.message ||
+        "Delete failed"
+      );
 
     }
 
@@ -231,7 +246,10 @@ function AdminDashboard() {
 
       console.error(error);
 
-      alert("Delete failed");
+      alert(
+        error.response?.data?.message ||
+        "Delete failed"
+      );
 
     }
 
@@ -246,6 +264,12 @@ function AdminDashboard() {
         <h1 className="text-3xl font-bold mb-8">
           Admin Dashboard
         </h1>
+
+        {initialLoading && (
+          <p className="text-gray-400">
+            Loading dashboard...
+          </p>
+        )}
 
         <div className="grid md:grid-cols-2 gap-10">
 
@@ -310,10 +334,10 @@ function AdminDashboard() {
             <button
               onClick={addProject}
               disabled={loading}
-              className="bg-green-500 px-4 py-2 rounded"
+              className="bg-green-500 px-4 py-2 rounded disabled:opacity-50"
             >
               <Plus size={18} />
-              Add Project
+              {loading ? "Adding..." : "Add Project"}
             </button>
 
           </div>

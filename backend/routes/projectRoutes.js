@@ -6,22 +6,37 @@ import {
   removeProject
 } from "../controllers/projectController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import {
+  protect
+} from "../middleware/authMiddleware.js";
 
 import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-// ---------------- GET ALL PROJECTS ----------------
-// Public route
+/*
+  PROJECT ROUTES
+  Base URL:
+  /api/projects
+*/
+
+/*
+  GET ALL PROJECTS
+  Public route
+  GET /api/projects
+*/
 
 router.get(
   "/",
   fetchProjects
 );
 
-// ---------------- CREATE PROJECT ----------------
-// Protected + File upload
+/*
+  CREATE PROJECT
+  Protected route
+  Handles image upload
+  POST /api/projects
+*/
 
 router.post(
   "/",
@@ -30,8 +45,11 @@ router.post(
   createProject
 );
 
-// ---------------- DELETE PROJECT ----------------
-// Protected route
+/*
+  DELETE PROJECT
+  Protected route
+  DELETE /api/projects/:id
+*/
 
 router.delete(
   "/:id",
