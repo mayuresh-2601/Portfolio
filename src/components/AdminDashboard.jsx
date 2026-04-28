@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/immutability */
 
 import { useState, useEffect } from "react";
@@ -43,8 +42,6 @@ function AdminDashboard() {
 
       setProjects(projectsRes.data);
       setSkills(skillsRes.data);
-
-      console.log("Data loaded");
 
     } catch (error) {
 
@@ -339,6 +336,36 @@ function AdminDashboard() {
               <Plus size={18} />
               {loading ? "Adding..." : "Add Project"}
             </button>
+
+            {/* PROJECT LIST */}
+
+            <div className="space-y-2 mt-4">
+
+              {projects.map((project) => (
+
+                <div
+                  key={project.id}
+                  className="flex justify-between bg-slate-700 p-3 rounded"
+                >
+
+                  <p className="font-medium">
+                    {project.title}
+                  </p>
+
+                  <button
+                    onClick={() =>
+                      deleteProject(project.id)
+                    }
+                    className="text-red-400 hover:text-red-500"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+
+                </div>
+
+              ))}
+
+            </div>
 
           </div>
 

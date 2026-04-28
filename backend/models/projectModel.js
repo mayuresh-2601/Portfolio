@@ -82,6 +82,52 @@ export const addProject = async (project) => {
 
 };
 
+// ---------------- UPDATE PROJECT ----------------
+
+export const updateProject = async (id, project) => {
+
+  try {
+
+    const sql = `
+      UPDATE projects
+      SET
+        title = ?,
+        description = ?,
+        github = ?,
+        demo = ?,
+        image = COALESCE(?, image)
+      WHERE id = ?
+    `;
+
+    const values = [
+
+      project.title,
+      project.description,
+      project.github,
+      project.demo,
+      project.image || null,
+      id
+
+    ];
+
+    const [result] =
+      await db.query(sql, values);
+
+    return result;
+
+  } catch (error) {
+
+    console.error(
+      "Error updating project:",
+      error
+    );
+
+    throw error;
+
+  }
+
+};
+
 // ---------------- DELETE PROJECT ----------------
 
 export const deleteProject = async (id) => {
