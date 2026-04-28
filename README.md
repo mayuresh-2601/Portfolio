@@ -331,6 +331,8 @@ DB_PASSWORD=your_password
 DB_NAME=portfolio_db
 
 JWT_SECRET=your_secret_key
+
+ADMIN_EMAIL=your-email@gmail.com
 ```
 
 ---
