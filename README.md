@@ -243,21 +243,26 @@ my-portfolio
 │
 ├── src
 │   │
+│   ├── admin
+│   │   ├── AdminDashboard.jsx
+│   │   ├── AdminLogin.jsx
+│   │   └── ProtectedRoute.jsx
+│   │
 │   ├── api
 │   │   └── axios.js
 │   │
 │   ├── assets
 │   │
 │   ├── components
-│   │
-│   ├── pages
-│   │   ├── Home.jsx
 │   │   ├── About.jsx
-│   │   ├── Skills.jsx
-│   │   ├── Projects.jsx
 │   │   ├── Contact.jsx
-│   │   ├── AdminLogin.jsx
-│   │   └── AdminDashboard.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Github.jsx
+│   │   ├── Home.jsx
+│   │   ├── Linkedin.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── Projects.jsx
+│   │   └── Skills.jsx
 │   │
 │   ├── App.jsx
 │   ├── App.css
