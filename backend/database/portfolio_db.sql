@@ -47,3 +47,4 @@ CREATE TABLE messages (
 
 TRUNCATE TABLE skills;
 
+TRUNCATE TABLE projects;
