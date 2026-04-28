@@ -165,6 +165,8 @@ It is suitable for:
 
 ## 📂 Project Structure
 
+```
+
 my-portfolio
 │
 ├── backend
@@ -233,6 +235,8 @@ my-portfolio
 ├── vite.config.js
 ├── README.md
 └── .gitignore
+
+```
 ---
 
 ## ⚙️ Installation & Setup
