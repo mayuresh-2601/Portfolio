@@ -101,6 +101,18 @@ export const login = async (req, res) => {
 
     const user = users[0];
 
+    // ---------------- ONLY ADMIN EMAIL CAN LOGIN ----------------
+
+    if (user.email !== process.env.ADMIN_EMAIL) {
+
+      return res.status(403).json({
+        message: "Access denied"
+      });
+
+    }
+
+    // ---------------- PASSWORD CHECK ----------------
+
     const isMatch =
       bcrypt.compareSync(
         password,
@@ -116,20 +128,34 @@ export const login = async (req, res) => {
 
     }
 
+    // ---------------- CREATE TOKEN ----------------
+
     const token = jwt.sign(
+
       {
         id: user.id,
         email: user.email
       },
+
       process.env.JWT_SECRET,
+
       {
         expiresIn: "1d"
       }
+
     );
 
     res.status(200).json({
+
       message: "Login successful",
-      token
+
+      token,
+
+      user: {
+        id: user.id,
+        email: user.email
+      }
+
     });
 
   } catch (error) {

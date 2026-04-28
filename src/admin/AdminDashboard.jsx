@@ -26,7 +26,17 @@ function AdminDashboard() {
     loadData();
   }, []);
 
-  // LOAD DATA
+  // ---------------- LOGOUT ----------------
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("token");
+
+    window.location.href = "/";
+
+  };
+
+  // ---------------- LOAD DATA ----------------
 
   const loadData = async () => {
 
@@ -60,7 +70,7 @@ function AdminDashboard() {
 
   };
 
-  // INPUT CHANGE
+  // ---------------- INPUT CHANGE ----------------
 
   const handleProjectChange = (e) => {
 
@@ -73,7 +83,7 @@ function AdminDashboard() {
 
   };
 
-  // FILE UPLOAD
+  // ---------------- FILE UPLOAD ----------------
 
   const handleFileUpload = (e) => {
 
@@ -88,7 +98,7 @@ function AdminDashboard() {
 
   };
 
-  // ADD PROJECT
+  // ---------------- ADD PROJECT ----------------
 
   const addProject = async () => {
 
@@ -153,7 +163,7 @@ function AdminDashboard() {
 
   };
 
-  // DELETE PROJECT
+  // ---------------- DELETE PROJECT ----------------
 
   const deleteProject = async (id) => {
 
@@ -183,7 +193,7 @@ function AdminDashboard() {
 
   };
 
-  // ADD SKILL
+  // ---------------- ADD SKILL ----------------
 
   const addSkill = async () => {
 
@@ -222,7 +232,7 @@ function AdminDashboard() {
 
   };
 
-  // DELETE SKILL
+  // ---------------- DELETE SKILL ----------------
 
   const deleteSkill = async (id) => {
 
@@ -258,9 +268,22 @@ function AdminDashboard() {
 
       <div className="max-w-6xl mx-auto">
 
-        <h1 className="text-3xl font-bold mb-8">
-          Admin Dashboard
-        </h1>
+        {/* Header */}
+
+        <div className="flex justify-between items-center mb-8">
+
+          <h1 className="text-3xl font-bold">
+            Admin Dashboard
+          </h1>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+
+        </div>
 
         {initialLoading && (
           <p className="text-gray-400">
@@ -270,7 +293,7 @@ function AdminDashboard() {
 
         <div className="grid md:grid-cols-2 gap-10">
 
-          {/* PROJECT */}
+          {/* PROJECT SECTION */}
 
           <div className="bg-slate-800 p-6 rounded-xl space-y-4">
 
@@ -337,8 +360,6 @@ function AdminDashboard() {
               {loading ? "Adding..." : "Add Project"}
             </button>
 
-            {/* PROJECT LIST */}
-
             <div className="space-y-2 mt-4">
 
               {projects.map((project) => (
@@ -369,7 +390,7 @@ function AdminDashboard() {
 
           </div>
 
-          {/* SKILLS */}
+          {/* SKILLS SECTION */}
 
           <div className="bg-slate-800 p-6 rounded-xl space-y-4">
 

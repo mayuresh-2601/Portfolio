@@ -7,44 +7,74 @@ import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 
-import AdminLogin from "./components/AdminLogin";
-import AdminDashboard from "./components/AdminDashboard";
-import ProtectedRoute from "./components/ProtectedRoute";
+import AdminLogin from "./admin/AdminLogin";
+import AdminDashboard from "./admin/AdminDashboard";
+import ProtectedRoute from "./admin/ProtectedRoute";
 
-import { Routes, Route } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation
+} from "react-router-dom";
 
 function App() {
+
+  const location = useLocation();
+
+  // Hide Navbar & Footer on admin pages
+
+  const isAdminRoute =
+    location.pathname.startsWith("/admin");
+
   return (
+
     <div className="min-h-screen flex flex-col bg-slate-900">
 
-      {/* Navigation */}
-      <Navbar />
+      {/* Show Navbar only on public pages */}
+
+      {!isAdminRoute && <Navbar />}
 
       {/* Main Content */}
+
       <main className="grow pt-20">
 
         <Routes>
 
-          {/* Public Routes */}
+          {/* ---------------- PUBLIC ROUTES ---------------- */}
 
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-          <Route path="/about" element={<About />} />
+          <Route
+            path="/about"
+            element={<About />}
+          />
 
-          <Route path="/skills" element={<Skills />} />
+          <Route
+            path="/skills"
+            element={<Skills />}
+          />
 
-          <Route path="/projects" element={<Projects />} />
+          <Route
+            path="/projects"
+            element={<Projects />}
+          />
 
-          <Route path="/contact" element={<Contact />} />
+          <Route
+            path="/contact"
+            element={<Contact />}
+          />
 
-          {/* Admin Login */}
+          {/* ---------------- ADMIN LOGIN ---------------- */}
 
           <Route
             path="/admin"
             element={<AdminLogin />}
           />
 
-          {/* Protected Admin Dashboard */}
+          {/* ---------------- PROTECTED ADMIN DASHBOARD ---------------- */}
 
           <Route
             path="/admin/dashboard"
@@ -55,15 +85,21 @@ function App() {
             }
           />
 
-          {/* 404 Fallback */}
+          {/* ---------------- 404 PAGE ---------------- */}
 
           <Route
             path="*"
             element={
               <div className="text-center text-white mt-20">
+
                 <h1 className="text-4xl font-bold">
                   404 - Page Not Found
                 </h1>
+
+                <p className="mt-4 text-gray-400">
+                  The page you are looking for does not exist.
+                </p>
+
               </div>
             }
           />
@@ -72,11 +108,14 @@ function App() {
 
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Show Footer only on public pages */}
+
+      {!isAdminRoute && <Footer />}
 
     </div>
+
   );
+
 }
 
 export default App;
