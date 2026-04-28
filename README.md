@@ -60,15 +60,31 @@ It is suitable for:
 - Full Stack Developer portfolio showcase
 - Technical interview demonstrations
 
-## 📸 Screenshots
+## 📸 Application Screenshots
+
+---
+
+## 👤 User Interface — Portfolio Pages
 
 ### 🏠 Home Page
+
+This is the main landing page where users can view the developer introduction, skills highlights, and navigation options.
 
 ![Home Page](public/Home.png)
 
 ---
 
+### 🏠 Admin Home Page
+
+This page appears after admin login and allows the administrator to manage projects, skills, and portfolio content securely.
+
+![Admin Home Page](public/AdminHome.png)
+
+---
+
 ### 👤 About Page
+
+This page provides background information about the developer, experience, and technical expertise.
 
 ![About Page](public/About.png)
 
@@ -76,11 +92,18 @@ It is suitable for:
 
 ### 📞 Contact Page
 
+Users can use this page to send messages or connect with the developer.
+
 ![Contact Page](public/Contact.png)
 
 ---
 
+## 🔐 Admin Interface — Secure Management Panel
+
 ### 🔐 Admin Login Page
+
+This is the secure authentication page for administrators.  
+Only authorized users can access the admin dashboard.
 
 ![Admin Login](public/Login.png)
 
@@ -88,8 +111,20 @@ It is suitable for:
 
 ### 📊 Admin Dashboard
 
+This dashboard allows administrators to manage portfolio content dynamically.
+
+Admin can:
+
+- Add new projects
+- Delete projects
+- Upload project images
+- Add skills
+- Delete skills
+- Manage portfolio data securely
+
 ![Admin Dashboard](public/Admin.png)
 
+---
 ---
 
 ## 🛠️ Technologies Used
