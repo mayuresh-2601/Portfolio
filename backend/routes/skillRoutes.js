@@ -10,16 +10,17 @@ import {
   protect
 } from "../middleware/authMiddleware.js";
 
-const router = express.Router();
-
 /*
   SKILL ROUTES
   Base URL:
   /api/skills
 */
 
+const router =
+  express.Router();
+
+/* ---------------- GET ALL SKILLS ---------------- */
 /*
-  GET ALL SKILLS
   Public route
   GET /api/skills
 */
@@ -29,8 +30,8 @@ router.get(
   fetchSkills
 );
 
+/* ---------------- CREATE SKILL ---------------- */
 /*
-  CREATE SKILL
   Protected route
   POST /api/skills
 */
@@ -41,8 +42,8 @@ router.post(
   createSkill
 );
 
+/* ---------------- DELETE SKILL ---------------- */
 /*
-  DELETE SKILL
   Protected route
   DELETE /api/skills/:id
 */
@@ -52,5 +53,7 @@ router.delete(
   protect,
   removeSkill
 );
+
+/* ---------------- EXPORT ROUTER ---------------- */
 
 export default router;

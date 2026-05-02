@@ -1,60 +1,51 @@
 import db from "../config/db.js";
 
 /*
-  SKILL MODEL
-  Uses mysql2 promise pool
-  Returns clean async results
+  ADD SKILL
+  name: string
+  level: number (0–100)
 */
 
-// ---------------- GET ALL SKILLS ----------------
-
-export const getAllSkills = async () => {
-
-  try {
-
-    const sql = `
-      SELECT *
-      FROM skills
-      ORDER BY id DESC
-    `;
-
-    const [rows] = await db.query(sql);
-
-    return rows;
-
-  } catch (error) {
-
-    console.error(
-      "Error fetching skills:",
-      error
-    );
-
-    throw error;
-
-  }
-
-};
-
-// ---------------- ADD SKILL ----------------
-
-export const addSkill = async (name) => {
+export const addSkill = async (
+  name,
+  level = 80
+) => {
 
   try {
 
-    const sql = `
-      INSERT INTO skills (name)
-      VALUES (?)
+    /* Ensure level is valid */
+
+    if (!level || level < 0) {
+      level = 0;
+    }
+
+    if (level > 100) {
+      level = 100;
+    }
+
+    const query = `
+      INSERT INTO skills
+      (name, level)
+      VALUES (?, ?)
     `;
+
+    const values = [
+      name,
+      level
+    ];
 
     const [result] =
-      await db.query(sql, [name]);
+      await db.execute(
+        query,
+        values
+      );
 
     return result;
 
   } catch (error) {
 
     console.error(
-      "Error adding skill:",
+      "Add Skill Error:",
       error
     );
 
@@ -64,31 +55,70 @@ export const addSkill = async (name) => {
 
 };
 
-// ---------------- DELETE SKILL ----------------
+/*
+  GET ALL SKILLS
+*/
 
-export const deleteSkill = async (id) => {
+export const getSkills =
+  async () => {
 
-  try {
+    try {
 
-    const sql = `
-      DELETE FROM skills
-      WHERE id = ?
-    `;
+      const query = `
+        SELECT *
+        FROM skills
+        ORDER BY id DESC
+      `;
 
-    const [result] =
-      await db.query(sql, [id]);
+      const [rows] =
+        await db.execute(
+          query
+        );
 
-    return result;
+      return rows;
 
-  } catch (error) {
+    } catch (error) {
 
-    console.error(
-      "Error deleting skill:",
-      error
-    );
+      console.error(
+        "Get Skills Error:",
+        error
+      );
 
-    throw error;
+      throw error;
 
-  }
+    }
 
-};
+  };
+
+/*
+  DELETE SKILL
+*/
+
+export const deleteSkill =
+  async (id) => {
+
+    try {
+
+      const query =
+        "DELETE FROM skills WHERE id = ?";
+
+      const [result] =
+        await db.execute(
+          query,
+          [id]
+        );
+
+      return result;
+
+    } catch (error) {
+
+      console.error(
+        "Delete Skill Error:",
+        error
+      );
+
+      throw error;
+
+    }
+
+  };

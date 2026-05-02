@@ -4,16 +4,13 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 
 /*
-  UPLOAD MIDDLEWARE
-  Safe for Windows / Linux / Deployment
+========================================
+RESOLVE DIRECTORY
+========================================
 */
-
-// ---------------- Resolve Directory ----------------
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// ---------------- Upload Folder Path ----------------
 
 const uploadPath = path.join(
   __dirname,
@@ -21,14 +18,17 @@ const uploadPath = path.join(
   "uploads"
 );
 
-// ---------------- Ensure Upload Folder Exists ----------------
+/*
+========================================
+CREATE UPLOADS FOLDER IF MISSING
+========================================
+*/
 
 if (!fs.existsSync(uploadPath)) {
 
-  fs.mkdirSync(
-    uploadPath,
-    { recursive: true }
-  );
+  fs.mkdirSync(uploadPath, {
+    recursive: true
+  });
 
   console.log(
     "Uploads folder created"
@@ -36,16 +36,17 @@ if (!fs.existsSync(uploadPath)) {
 
 }
 
-// ---------------- Storage Configuration ----------------
+/*
+========================================
+STORAGE CONFIG
+========================================
+*/
 
 const storage = multer.diskStorage({
 
   destination: (req, file, cb) => {
 
-    cb(
-      null,
-      uploadPath
-    );
+    cb(null, uploadPath);
 
   },
 
@@ -61,16 +62,22 @@ const storage = multer.diskStorage({
         file.originalname
       );
 
-    cb(
-      null,
+    console.log(
+      "Saving file as:",
       uniqueName
     );
+
+    cb(null, uniqueName);
 
   }
 
 });
 
-// ---------------- File Filter ----------------
+/*
+========================================
+FILE FILTER
+========================================
+*/
 
 const fileFilter = (
   req,
@@ -78,40 +85,61 @@ const fileFilter = (
   cb
 ) => {
 
-  const allowedTypes = [
+  console.log(
+    "File received:",
+    file.originalname
+  );
 
-    "image/jpeg",
-    "image/png",
-    "image/jpg",
-    "image/webp"
+  console.log(
+    "MIME type:",
+    file.mimetype
+  );
 
-  ];
+  /*
+  Allow any image
+  */
 
   if (
-    allowedTypes.includes(
-      file.mimetype
+    file.mimetype.startsWith(
+      "image/"
     )
   ) {
 
-    cb(
-      null,
-      true
-    );
-
-  } else {
-
-    cb(
-      new Error(
-        "Only image files (jpeg, png, jpg, webp) are allowed"
-      ),
-      false
-    );
+    return cb(null, true);
 
   }
 
+  /*
+  Allow PDF
+  */
+
+  if (
+    file.mimetype ===
+    "application/pdf"
+  ) {
+
+    return cb(null, true);
+
+  }
+
+  /*
+  Reject other types
+  */
+
+  return cb(
+    new Error(
+      "Only image files or PDF allowed"
+    ),
+    false
+  );
+
 };
 
-// ---------------- Multer Configuration ----------------
+/*
+========================================
+MULTER CONFIG
+========================================
+*/
 
 const upload = multer({
 
@@ -122,10 +150,16 @@ const upload = multer({
   limits: {
 
     fileSize:
-      5 * 1024 * 1024 // 5MB
+      10 * 1024 * 1024
 
   }
 
 });
+
+/*
+========================================
+EXPORT
+========================================
+*/
 
 export default upload;

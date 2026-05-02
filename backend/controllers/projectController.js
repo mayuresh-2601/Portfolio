@@ -1,19 +1,46 @@
+/* eslint-disable no-unused-vars */
+
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import {
   getAllProjects,
   addProject,
   deleteProject,
-  updateProject
+  updateProject,
+  getProjectById
 } from "../models/projectModel.js";
 
 /*
-  PROJECT CONTROLLER
-  Async / Await pattern
-  Compatible with mysql2 promise
+========================================
+RESOLVE DIRECTORY
+========================================
 */
 
-// ---------------- GET ALL PROJECTS ----------------
+const __filename =
+  fileURLToPath(import.meta.url);
 
-export const fetchProjects = async (req, res) => {
+const __dirname =
+  path.dirname(__filename);
+
+const uploadsPath =
+  path.join(
+    __dirname,
+    "..",
+    "uploads"
+  );
+
+/*
+========================================
+GET ALL PROJECTS
+========================================
+*/
+
+export const fetchProjects = async (
+  req,
+  res
+) => {
 
   try {
 
@@ -40,11 +67,22 @@ export const fetchProjects = async (req, res) => {
 
 };
 
-// ---------------- CREATE PROJECT ----------------
+/*
+========================================
+CREATE PROJECT
+========================================
+*/
 
-export const createProject = async (req, res) => {
+export const createProject = async (
+  req,
+  res
+) => {
 
   try {
+
+    console.log(
+      "createProject called"
+    );
 
     const {
       title,
@@ -53,9 +91,10 @@ export const createProject = async (req, res) => {
       demo
     } = req.body;
 
-    // Validate input
-
-    if (!title || !description) {
+    if (
+      !title ||
+      !description
+    ) {
 
       return res.status(400).json({
         message:
@@ -64,29 +103,47 @@ export const createProject = async (req, res) => {
 
     }
 
-    // Handle uploaded image
+    if (!req.file) {
+
+      return res.status(400).json({
+        message:
+          "Image upload is required"
+      });
+
+    }
 
     const project = {
 
-      title,
-      description,
-      github,
-      demo,
+      title:
+        title.trim(),
 
-      image: req.file
-        ? req.file.filename
-        : null
+      description:
+        description.trim(),
+
+      github:
+        github || "",
+
+      demo:
+        demo || "",
+
+      image:
+        req.file.filename
 
     };
 
     const result =
       await addProject(project);
 
+    console.log(
+      "Project saved:",
+      result.insertId
+    );
+
     return res.status(201).json({
 
+      success: true,
       message:
         "Project added successfully",
-
       id:
         result.insertId
 
@@ -108,9 +165,17 @@ export const createProject = async (req, res) => {
 
 };
 
-// ---------------- UPDATE PROJECT ----------------
+/*
+========================================
+UPDATE PROJECT
+(Delete old image if new one uploaded)
+========================================
+*/
 
-export const updateProjectById = async (req, res) => {
+export const updateProjectById = async (
+  req,
+  res
+) => {
 
   try {
 
@@ -124,8 +189,6 @@ export const updateProjectById = async (req, res) => {
       demo
     } = req.body;
 
-    // Validate input
-
     if (!id) {
 
       return res.status(400).json({
@@ -135,7 +198,10 @@ export const updateProjectById = async (req, res) => {
 
     }
 
-    if (!title || !description) {
+    if (
+      !title ||
+      !description
+    ) {
 
       return res.status(400).json({
         message:
@@ -144,18 +210,72 @@ export const updateProjectById = async (req, res) => {
 
     }
 
-    // Handle uploaded image
+    /*
+    Get existing project
+    */
+
+    const existingProject =
+      await getProjectById(id);
+
+    if (!existingProject) {
+
+      return res.status(404).json({
+        message:
+          "Project not found"
+      });
+
+    }
+
+    /*
+    Delete old image if new uploaded
+    */
+
+    if (
+      req.file &&
+      existingProject.image
+    ) {
+
+      const oldFilePath =
+        path.join(
+          uploadsPath,
+          existingProject.image
+        );
+
+      if (
+        fs.existsSync(oldFilePath)
+      ) {
+
+        fs.unlinkSync(
+          oldFilePath
+        );
+
+        console.log(
+          "Deleted old image:",
+          existingProject.image
+        );
+
+      }
+
+    }
 
     const project = {
 
-      title,
-      description,
-      github,
-      demo,
+      title:
+        title.trim(),
 
-      image: req.file
-        ? req.file.filename
-        : null
+      description:
+        description.trim(),
+
+      github:
+        github || "",
+
+      demo:
+        demo || "",
+
+      image:
+        req.file
+          ? req.file.filename
+          : existingProject.image
 
     };
 
@@ -166,6 +286,7 @@ export const updateProjectById = async (req, res) => {
 
     return res.status(200).json({
 
+      success: true,
       message:
         "Project updated successfully"
 
@@ -187,9 +308,17 @@ export const updateProjectById = async (req, res) => {
 
 };
 
-// ---------------- DELETE PROJECT ----------------
+/*
+========================================
+DELETE PROJECT
+(Delete image from uploads folder)
+========================================
+*/
 
-export const removeProject = async (req, res) => {
+export const removeProject = async (
+  req,
+  res
+) => {
 
   try {
 
@@ -205,10 +334,58 @@ export const removeProject = async (req, res) => {
 
     }
 
+    /*
+    Get project first
+    */
+
+    const project =
+      await getProjectById(id);
+
+    if (!project) {
+
+      return res.status(404).json({
+        message:
+          "Project not found"
+      });
+
+    }
+
+    /*
+    Delete image file
+    */
+
+    if (project.image) {
+
+      const filePath =
+        path.join(
+          uploadsPath,
+          project.image
+        );
+
+      if (
+        fs.existsSync(filePath)
+      ) {
+
+        fs.unlinkSync(filePath);
+
+        console.log(
+          "Deleted project image:",
+          project.image
+        );
+
+      }
+
+    }
+
+    /*
+    Delete DB record
+    */
+
     await deleteProject(id);
 
     return res.status(200).json({
 
+      success: true,
       message:
         "Project deleted successfully"
 

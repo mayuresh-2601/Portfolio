@@ -44,4 +44,21 @@ CREATE TABLE messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Certificates
+
+CREATE TABLE certificates (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    title VARCHAR(255) NOT NULL,
+
+    issuer VARCHAR(255),
+
+    image VARCHAR(255),
+
+    link VARCHAR(255),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
 

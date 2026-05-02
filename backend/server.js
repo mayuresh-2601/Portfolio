@@ -1,28 +1,48 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
+import helmet from "helmet";
+import morgan from "morgan";
 import { fileURLToPath } from "url";
 
+/* DATABASE */
+
 import db from "./config/db.js";
+
+/* ROUTES */
 
 import authRoutes from "./routes/authRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import certificateRoutes from "./routes/certificateRoutes.js";
+
+/* MIDDLEWARE */
 
 import {
   errorHandler,
   notFound
 } from "./middleware/errorMiddleware.js";
 
+/*
+========================================
+CONFIG
+========================================
+*/
+
 dotenv.config();
 
 const app = express();
 
 /*
-  Resolve directory path
+========================================
+RESOLVE DIRECTORY
+========================================
 */
 
 const __filename =
@@ -32,18 +52,69 @@ const __dirname =
   path.dirname(__filename);
 
 /*
-  CORS
+========================================
+CREATE UPLOADS FOLDER
+========================================
+*/
+
+const uploadsPath =
+  path.join(
+    __dirname,
+    "uploads"
+  );
+
+if (!fs.existsSync(uploadsPath)) {
+
+  fs.mkdirSync(
+    uploadsPath,
+    { recursive: true }
+  );
+
+  console.log(
+    "Uploads folder created"
+  );
+
+}
+
+/*
+========================================
+SECURITY (FIXED)
+========================================
+*/
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: "cross-origin"
+    }
+  })
+);
+
+/*
+========================================
+LOGGING
+========================================
+*/
+
+app.use(morgan("dev"));
+
+/*
+========================================
+CORS (FIXED)
+========================================
 */
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     credentials: true
   })
 );
 
 /*
-  Body Parser
+========================================
+BODY PARSER
+========================================
 */
 
 app.use(express.json());
@@ -55,14 +126,10 @@ app.use(
 );
 
 /*
-  Static Upload Folder
+========================================
+STATIC UPLOAD FOLDER
+========================================
 */
-
-const uploadsPath =
-  path.join(
-    __dirname,
-    "uploads"
-  );
 
 app.use(
   "/uploads",
@@ -72,7 +139,9 @@ app.use(
 );
 
 /*
-  Root Test Route
+========================================
+ROOT ROUTE
+========================================
 */
 
 app.get(
@@ -88,7 +157,9 @@ app.get(
 );
 
 /*
-  API Routes
+========================================
+API ROUTES
+========================================
 */
 
 app.use(
@@ -106,8 +177,72 @@ app.use(
   skillRoutes
 );
 
+app.use(
+  "/api/messages",
+  messageRoutes
+);
+
+app.use(
+  "/api/certificates",
+  certificateRoutes
+);
+
 /*
-  Error Handling Middleware
+========================================
+MULTER ERROR HANDLER
+========================================
+*/
+
+app.use(
+  (err, req, res, next) => {
+
+    if (err.name === "MulterError") {
+
+      console.error(
+        "Multer error:",
+        err
+      );
+
+      if (
+        err.code ===
+        "LIMIT_FILE_SIZE"
+      ) {
+
+        return res.status(400).json({
+          message:
+            "File size must be less than 10MB"
+        });
+
+      }
+
+      return res.status(400).json({
+        message:
+          err.message
+      });
+
+    }
+
+    if (
+      err.message ===
+      "Only image files or PDF allowed"
+    ) {
+
+      return res.status(400).json({
+        message:
+          err.message
+      });
+
+    }
+
+    next(err);
+
+  }
+);
+
+/*
+========================================
+404 + GLOBAL ERROR
+========================================
 */
 
 app.use(notFound);
@@ -115,7 +250,9 @@ app.use(notFound);
 app.use(errorHandler);
 
 /*
-  Server Start
+========================================
+SERVER START
+========================================
 */
 
 const PORT =
@@ -126,8 +263,20 @@ app.listen(
   () => {
 
     console.log(
+      "================================"
+    );
+
+    console.log(
       `Server running on port ${PORT}`
     );
 
+    console.log(
+      `Uploads path: ${uploadsPath}`
+    );
+
+    console.log(
+      "================================"
+    );
+
   }
-);
+); 

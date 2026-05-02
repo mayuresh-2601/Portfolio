@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
   Menu,
   X,
@@ -8,16 +9,19 @@ import {
   Code,
   Folder,
   Mail,
-  Shield
+  Shield,
+  Award
 } from "lucide-react";
 
 function Navbar() {
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] =
+    useState(false);
 
-  // Get token safely inside component
+  // Get token safely
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token");
 
   return (
 
@@ -25,13 +29,16 @@ function Navbar() {
 
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        {/* Logo */}
+        {/* LOGO */}
 
-        <h1 className="text-2xl font-bold bg-linear-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+        <Link
+          to="/"
+          className="text-2xl font-bold bg-linear-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent hover:opacity-80 transition"
+        >
           MyPortfolio
-        </h1>
+        </Link>
 
-        {/* Desktop Menu */}
+        {/* DESKTOP MENU */}
 
         <ul className="hidden md:flex items-center space-x-8 font-medium">
 
@@ -75,6 +82,18 @@ function Navbar() {
             </Link>
           </li>
 
+          {/* NEW — CERTIFICATES */}
+
+          <li>
+            <Link
+              to="/certificates"
+              className="flex items-center gap-2 hover:text-sky-400 transition"
+            >
+              <Award size={18} />
+              Certificates
+            </Link>
+          </li>
+
           <li>
             <Link
               to="/contact"
@@ -85,7 +104,7 @@ function Navbar() {
             </Link>
           </li>
 
-          {/* ADMIN LINK — Only visible when logged in */}
+          {/* ADMIN LINK */}
 
           {token && (
 
@@ -103,7 +122,7 @@ function Navbar() {
 
         </ul>
 
-        {/* Mobile Button */}
+        {/* MOBILE BUTTON */}
 
         <div className="md:hidden">
 
@@ -124,7 +143,7 @@ function Navbar() {
 
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
 
       {isOpen && (
 
@@ -176,6 +195,19 @@ function Navbar() {
               </Link>
             </li>
 
+            {/* NEW — CERTIFICATES */}
+
+            <li>
+              <Link
+                to="/certificates"
+                onClick={() =>
+                  setIsOpen(false)
+                }
+              >
+                Certificates
+              </Link>
+            </li>
+
             <li>
               <Link
                 to="/contact"
@@ -187,7 +219,7 @@ function Navbar() {
               </Link>
             </li>
 
-            {/* ADMIN MOBILE — Only when logged in */}
+            {/* ADMIN MOBILE */}
 
             {token && (
 

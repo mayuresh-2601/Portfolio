@@ -1,12 +1,16 @@
 import db from "../config/db.js";
 
 /*
-  PROJECT MODEL
-  Uses mysql2 promise pool
-  Async / Await pattern
+========================================
+PROJECT MODEL
+========================================
 */
 
-// ---------------- GET ALL PROJECTS ----------------
+/*
+----------------------------------------
+GET ALL PROJECTS
+----------------------------------------
+*/
 
 export const getAllProjects = async () => {
 
@@ -36,7 +40,46 @@ export const getAllProjects = async () => {
 
 };
 
-// ---------------- ADD PROJECT ----------------
+/*
+----------------------------------------
+GET PROJECT BY ID
+(Required for delete / update image)
+----------------------------------------
+*/
+
+export const getProjectById = async (id) => {
+
+  try {
+
+    const sql = `
+      SELECT *
+      FROM projects
+      WHERE id = ?
+    `;
+
+    const [rows] =
+      await db.query(sql, [id]);
+
+    return rows[0];
+
+  } catch (error) {
+
+    console.error(
+      "Error fetching project by ID:",
+      error
+    );
+
+    throw error;
+
+  }
+
+};
+
+/*
+----------------------------------------
+ADD PROJECT
+----------------------------------------
+*/
 
 export const addProject = async (project) => {
 
@@ -82,9 +125,16 @@ export const addProject = async (project) => {
 
 };
 
-// ---------------- UPDATE PROJECT ----------------
+/*
+----------------------------------------
+UPDATE PROJECT
+----------------------------------------
+*/
 
-export const updateProject = async (id, project) => {
+export const updateProject = async (
+  id,
+  project
+) => {
 
   try {
 
@@ -128,7 +178,11 @@ export const updateProject = async (id, project) => {
 
 };
 
-// ---------------- DELETE PROJECT ----------------
+/*
+----------------------------------------
+DELETE PROJECT
+----------------------------------------
+*/
 
 export const deleteProject = async (id) => {
 

@@ -1,33 +1,54 @@
 import { useState } from "react";
 import api from "../api/axios";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 function Contact() {
 
-  // ---------------- State ----------------
-
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
-    message: "",
+    message: ""
   });
+
+  const [file, setFile] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
-  // ---------------- Handle Input ----------------
+  /* ---------------- HANDLE INPUT ---------------- */
 
   const handleChange = (e) => {
 
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
     });
 
   };
 
-  // ---------------- Submit Form ----------------
+  /* ---------------- HANDLE FILE ---------------- */
+
+  const handleFileChange = (e) => {
+
+    const selectedFile = e.target.files[0];
+
+    if (!selectedFile) return;
+
+    /* File size validation (10MB) */
+
+    if (selectedFile.size > 10 * 1024 * 1024) {
+
+      alert("File size must be less than 10MB");
+
+      e.target.value = "";
+
+      return;
+
+    }
+
+    setFile(selectedFile);
+
+  };
+
+  /* ---------------- SUBMIT FORM ---------------- */
 
   const handleSubmit = async (e) => {
 
@@ -37,20 +58,40 @@ function Contact() {
 
       setLoading(true);
 
+      const formData = new FormData();
+
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("message", form.message);
+
+      if (file) {
+
+        formData.append("file", file);
+
+      }
+
       await api.post(
         "/api/messages",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data"
+          }
+        }
       );
 
-      alert("Message sent successfully!");
+      alert("Message sent successfully");
 
-      // Reset form
+      /* Reset form */
 
-      setFormData({
+      setForm({
         name: "",
         email: "",
-        message: "",
+        message: ""
       });
+
+      setFile(null);
 
     } catch (error) {
 
@@ -69,253 +110,128 @@ function Contact() {
 
   };
 
-  // ---------------- UI ----------------
+  /* ---------------- UI ---------------- */
 
   return (
 
-    <section className="bg-slate-900 text-white py-20 px-6 min-h-screen">
+    <section className="min-h-screen bg-[#0a1a33] flex items-center justify-center px-4 py-12">
 
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full max-w-2xl bg-[#0f2a4a] p-8 rounded-xl shadow-xl border border-gray-700">
 
-        {/* Title */}
-
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-
-          Contact{" "}
-
-          <span className="bg-linear-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
-
-            Me
-
-          </span>
-
+        <h2 className="text-3xl font-bold text-center text-cyan-400 mb-2">
+          Contact Me
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <p className="text-center text-gray-400 mb-6">
+          Send message or upload resume
+        </p>
 
-          {/* Contact Info */}
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
 
-          <div className="space-y-6">
+          {/* Name */}
 
-            <h3 className="text-2xl font-semibold">
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={form.name}
+            onChange={handleChange}
+            required
+            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white focus:outline-none focus:border-cyan-400 transition"
+          />
 
-              Get In Touch
+          {/* Email */}
 
-            </h3>
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white focus:outline-none focus:border-cyan-400 transition"
+          />
 
-            <p className="text-gray-400 leading-relaxed">
+          {/* Message */}
 
-              I am available for internships, freelance work, and full-time opportunities. Feel free to contact me anytime.
+          <textarea
+            name="message"
+            placeholder="Your Message"
+            value={form.message}
+            onChange={handleChange}
+            required
+            rows="5"
+            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white focus:outline-none focus:border-cyan-400 transition"
+          />
 
-            </p>
+          {/* File Upload */}
 
-            {/* Email */}
+          <div>
 
-            <div className="flex items-center gap-4">
+            <label className="block text-gray-300 mb-2">
+              Upload Resume
+              <span className="text-gray-400 text-sm ml-1">
+                (PDF / DOC / DOCX — Max 10MB)
+              </span>
+            </label>
 
-              <div className="p-3 bg-slate-800 rounded-full">
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              className="
+                w-full
+                text-sm
+                text-gray-300
+                border
+                border-gray-600
+                rounded-lg
+                cursor-pointer
+                bg-[#0a1a33]
 
-                <Mail size={20} />
+                file:mr-4
+                file:py-2
+                file:px-4
+                file:rounded-lg
+                file:border-0
+                file:text-sm
+                file:font-semibold
+                file:bg-cyan-500
+                file:text-black
+                hover:file:bg-cyan-600
+              "
+            />
 
-              </div>
+            {file && (
 
-              <div>
+              <p className="text-green-400 text-sm mt-2">
 
-                <p className="text-gray-400 text-sm">
+                Selected: {file.name}
 
-                  Email
+              </p>
 
-                </p>
-
-                <p className="font-medium">
-
-                  kasarmayuresh99@gmail.com
-
-                </p>
-
-              </div>
-
-            </div>
-
-            {/* Phone */}
-
-            <div className="flex items-center gap-4">
-
-              <div className="p-3 bg-slate-800 rounded-full">
-
-                <Phone size={20} />
-
-              </div>
-
-              <div>
-
-                <p className="text-gray-400 text-sm">
-
-                  Phone
-
-                </p>
-
-                <p className="font-medium">
-
-                  +91 9082475445
-
-                </p>
-
-              </div>
-
-            </div>
-
-            {/* Location */}
-
-            <div className="flex items-center gap-4">
-
-              <div className="p-3 bg-slate-800 rounded-full">
-
-                <MapPin size={20} />
-
-              </div>
-
-              <div>
-
-                <p className="text-gray-400 text-sm">
-
-                  Location
-
-                </p>
-
-                <p className="font-medium">
-
-                  Dombivali, India
-
-                </p>
-
-              </div>
-
-            </div>
+            )}
 
           </div>
 
-          {/* Contact Form */}
+          {/* Submit Button */}
 
-          <form
-
-            onSubmit={handleSubmit}
-
-            className="bg-slate-800 p-8 rounded-2xl shadow-lg space-y-6"
-
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-500 text-black font-semibold py-3 rounded-lg transition"
           >
 
-            {/* Name */}
+            {loading
+              ? "Sending..."
+              : "Send Message"}
 
-            <div>
+          </button>
 
-              <label className="block text-sm mb-2">
-
-                Name
-
-              </label>
-
-              <input
-
-                type="text"
-
-                name="name"
-
-                value={formData.name}
-
-                onChange={handleChange}
-
-                required
-
-                placeholder="Enter your name"
-
-                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 transition"
-
-              />
-
-            </div>
-
-            {/* Email */}
-
-            <div>
-
-              <label className="block text-sm mb-2">
-
-                Email
-
-              </label>
-
-              <input
-
-                type="email"
-
-                name="email"
-
-                value={formData.email}
-
-                onChange={handleChange}
-
-                required
-
-                placeholder="Enter your email"
-
-                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 transition"
-
-              />
-
-            </div>
-
-            {/* Message */}
-
-            <div>
-
-              <label className="block text-sm mb-2">
-
-                Message
-
-              </label>
-
-              <textarea
-
-                name="message"
-
-                rows="5"
-
-                value={formData.message}
-
-                onChange={handleChange}
-
-                required
-
-                placeholder="Write your message"
-
-                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 transition"
-
-              />
-
-            </div>
-
-            {/* Button */}
-
-            <button
-
-              type="submit"
-
-              disabled={loading}
-
-              className="w-full flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 px-6 py-3 rounded-lg font-medium transition duration-300 disabled:opacity-50"
-
-            >
-
-              <Send size={18} />
-
-              {loading ? "Sending..." : "Send Message"}
-
-            </button>
-
-          </form>
-
-        </div>
+        </form>
 
       </div>
 

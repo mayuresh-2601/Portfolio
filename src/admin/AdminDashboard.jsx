@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/immutability */
+/* eslint-disable no-unused-vars */
 
 import { useState, useEffect } from "react";
 import api from "../api/axios";
@@ -8,6 +9,7 @@ function AdminDashboard() {
 
   const [projects, setProjects] = useState([]);
   const [skills, setSkills] = useState([]);
+  const [certificates, setCertificates] = useState([]);
 
   const [projectForm, setProjectForm] = useState({
     title: "",
@@ -17,60 +19,62 @@ function AdminDashboard() {
     imageFile: null
   });
 
+  const [certificateForm, setCertificateForm] = useState({
+    title: "",
+    issuer: "",
+    link: "",
+    imageFile: null
+  });
+
   const [skillName, setSkillName] = useState("");
+  const [skillLevel, setSkillLevel] = useState(80);
 
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  // ---------------- LOGOUT ----------------
-
   const handleLogout = () => {
-
     localStorage.removeItem("token");
-
     window.location.href = "/";
-
   };
 
-  // ---------------- LOAD DATA ----------------
+  /*
+  ================= LOAD DATA
+  */
 
   const loadData = async () => {
 
     try {
 
-      setInitialLoading(true);
-
-      const [projectsRes, skillsRes] =
-        await Promise.all([
-          api.get("/api/projects"),
-          api.get("/api/skills")
-        ]);
+      const [
+        projectsRes,
+        skillsRes,
+        certificatesRes
+      ] = await Promise.all([
+        api.get("/api/projects"),
+        api.get("/api/skills"),
+        api.get("/api/certificates")
+      ]);
 
       setProjects(projectsRes.data);
       setSkills(skillsRes.data);
+      setCertificates(certificatesRes.data);
 
     } catch (error) {
 
       console.error(error);
 
-      alert(
-        error.response?.data?.message ||
-        "Failed to load data"
-      );
-
-    } finally {
-
-      setInitialLoading(false);
+      alert("Failed to load data");
 
     }
 
   };
 
-  // ---------------- INPUT CHANGE ----------------
+  /*
+  ================= PROJECT
+  */
 
   const handleProjectChange = (e) => {
 
@@ -82,8 +86,6 @@ function AdminDashboard() {
     });
 
   };
-
-  // ---------------- FILE UPLOAD ----------------
 
   const handleFileUpload = (e) => {
 
@@ -98,43 +100,57 @@ function AdminDashboard() {
 
   };
 
-  // ---------------- ADD PROJECT ----------------
-
   const addProject = async () => {
 
-    if (!projectForm.title.trim()) {
+    if (!projectForm.title.trim())
+      return alert("Enter project title");
 
-      alert("Enter project title");
-      return;
-
-    }
+    if (!projectForm.imageFile)
+      return alert("Please upload image");
 
     try {
 
       setLoading(true);
 
-      const formData = new FormData();
+      const formData =
+        new FormData();
 
-      formData.append("title", projectForm.title);
-      formData.append("description", projectForm.description);
-      formData.append("github", projectForm.github);
-      formData.append("demo", projectForm.demo);
+      formData.append(
+        "title",
+        projectForm.title
+      );
 
-      if (projectForm.imageFile) {
+      formData.append(
+        "description",
+        projectForm.description
+      );
 
-        formData.append(
-          "image",
-          projectForm.imageFile
-        );
+      formData.append(
+        "github",
+        projectForm.github
+      );
 
-      }
+      formData.append(
+        "demo",
+        projectForm.demo
+      );
+
+      formData.append(
+        "image",
+        projectForm.imageFile
+      );
+
+      console.log(
+        "Uploading project image:",
+        projectForm.imageFile
+      );
 
       await api.post(
         "/api/projects",
         formData
       );
 
-      alert("Project added successfully");
+      alert("Project added");
 
       setProjectForm({
         title: "",
@@ -144,7 +160,7 @@ function AdminDashboard() {
         imageFile: null
       });
 
-      await loadData();
+      loadData();
 
     } catch (error) {
 
@@ -152,7 +168,7 @@ function AdminDashboard() {
 
       alert(
         error.response?.data?.message ||
-        "Project failed"
+        "Upload failed"
       );
 
     } finally {
@@ -163,91 +179,134 @@ function AdminDashboard() {
 
   };
 
-  // ---------------- DELETE PROJECT ----------------
-
   const deleteProject = async (id) => {
 
     if (!window.confirm("Delete project?"))
       return;
 
-    try {
+    await api.delete(`/api/projects/${id}`);
 
-      await api.delete(
-        `/api/projects/${id}`
-      );
-
-      alert("Project deleted");
-
-      await loadData();
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert(
-        error.response?.data?.message ||
-        "Delete failed"
-      );
-
-    }
+    loadData();
 
   };
 
-  // ---------------- ADD SKILL ----------------
+  /*
+  ================= SKILL
+  */
 
   const addSkill = async () => {
 
-    if (!skillName.trim()) {
+    if (!skillName.trim())
+      return alert("Enter skill name");
 
-      alert("Enter skill name");
-      return;
+    await api.post("/api/skills", {
+      name: skillName,
+      level: skillLevel
+    });
 
-    }
+    setSkillName("");
+    setSkillLevel(80);
 
-    try {
-
-      await api.post(
-        "/api/skills",
-        {
-          name: skillName
-        }
-      );
-
-      alert("Skill added");
-
-      setSkillName("");
-
-      await loadData();
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert(
-        error.response?.data?.message ||
-        "Skill failed"
-      );
-
-    }
+    loadData();
 
   };
-
-  // ---------------- DELETE SKILL ----------------
 
   const deleteSkill = async (id) => {
 
     if (!window.confirm("Delete skill?"))
       return;
 
-    try {
+    await api.delete(`/api/skills/${id}`);
 
-      await api.delete(
-        `/api/skills/${id}`
+    loadData();
+
+  };
+
+  /*
+  ================= CERTIFICATE
+  */
+
+  const handleCertificateChange = (e) => {
+
+    const { name, value } = e.target;
+
+    setCertificateForm({
+      ...certificateForm,
+      [name]: value
+    });
+
+  };
+
+  const handleCertificateFile = (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    setCertificateForm({
+      ...certificateForm,
+      imageFile: file
+    });
+
+  };
+
+  const addCertificate = async () => {
+
+    if (!certificateForm.title.trim())
+      return alert(
+        "Enter certificate title"
       );
 
-      alert("Skill deleted");
+    if (!certificateForm.imageFile)
+      return alert(
+        "Please upload certificate image"
+      );
 
-      await loadData();
+    try {
+
+      const formData =
+        new FormData();
+
+      formData.append(
+        "title",
+        certificateForm.title
+      );
+
+      formData.append(
+        "issuer",
+        certificateForm.issuer
+      );
+
+      formData.append(
+        "link",
+        certificateForm.link
+      );
+
+      formData.append(
+        "image",
+        certificateForm.imageFile
+      );
+
+      console.log(
+        "Uploading certificate image:",
+        certificateForm.imageFile
+      );
+
+      await api.post(
+        "/api/certificates",
+        formData
+      );
+
+      alert("Certificate added");
+
+      setCertificateForm({
+        title: "",
+        issuer: "",
+        link: "",
+        imageFile: null
+      });
+
+      loadData();
 
     } catch (error) {
 
@@ -255,10 +314,21 @@ function AdminDashboard() {
 
       alert(
         error.response?.data?.message ||
-        "Delete failed"
+        "Upload failed"
       );
 
     }
+
+  };
+
+  const deleteCertificate = async (id) => {
+
+    if (!window.confirm("Delete certificate?"))
+      return;
+
+    await api.delete(`/api/certificates/${id}`);
+
+    loadData();
 
   };
 
@@ -266,9 +336,7 @@ function AdminDashboard() {
 
     <section className="bg-slate-900 text-white min-h-screen p-6">
 
-      <div className="max-w-6xl mx-auto">
-
-        {/* Header */}
+      <div className="max-w-7xl mx-auto">
 
         <div className="flex justify-between items-center mb-8">
 
@@ -278,22 +346,18 @@ function AdminDashboard() {
 
           <button
             onClick={handleLogout}
-            className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition"
+            className="bg-red-500 px-4 py-2 rounded"
           >
             Logout
           </button>
 
         </div>
 
-        {initialLoading && (
-          <p className="text-gray-400">
-            Loading dashboard...
-          </p>
-        )}
+        {/* 3 COLUMN GRID */}
 
-        <div className="grid md:grid-cols-2 gap-10">
+        <div className="grid md:grid-cols-3 gap-10">
 
-          {/* PROJECT SECTION */}
+          {/* PROJECT */}
 
           <div className="bg-slate-800 p-6 rounded-xl space-y-4">
 
@@ -302,7 +366,6 @@ function AdminDashboard() {
             </h2>
 
             <input
-              type="text"
               name="title"
               value={projectForm.title}
               onChange={handleProjectChange}
@@ -319,7 +382,6 @@ function AdminDashboard() {
             />
 
             <input
-              type="text"
               name="github"
               value={projectForm.github}
               onChange={handleProjectChange}
@@ -328,7 +390,6 @@ function AdminDashboard() {
             />
 
             <input
-              type="text"
               name="demo"
               value={projectForm.demo}
               onChange={handleProjectChange}
@@ -351,16 +412,26 @@ function AdminDashboard() {
 
             </label>
 
+            {/* SHOW SELECTED FILE */}
+
+            {projectForm.imageFile && (
+
+              <p className="text-green-400 text-sm">
+                Selected:
+                {" "}
+                {projectForm.imageFile.name}
+              </p>
+
+            )}
+
             <button
               onClick={addProject}
-              disabled={loading}
-              className="bg-green-500 px-4 py-2 rounded disabled:opacity-50"
+              className="bg-green-500 px-4 py-2 rounded"
             >
-              <Plus size={18} />
-              {loading ? "Adding..." : "Add Project"}
+              Add Project
             </button>
 
-            <div className="space-y-2 mt-4">
+            <div className="space-y-2">
 
               {projects.map((project) => (
 
@@ -369,15 +440,12 @@ function AdminDashboard() {
                   className="flex justify-between bg-slate-700 p-3 rounded"
                 >
 
-                  <p className="font-medium">
-                    {project.title}
-                  </p>
+                  {project.title}
 
                   <button
                     onClick={() =>
                       deleteProject(project.id)
                     }
-                    className="text-red-400 hover:text-red-500"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -390,7 +458,7 @@ function AdminDashboard() {
 
           </div>
 
-          {/* SKILLS SECTION */}
+          {/* SKILL */}
 
           <div className="bg-slate-800 p-6 rounded-xl space-y-4">
 
@@ -399,7 +467,6 @@ function AdminDashboard() {
             </h2>
 
             <input
-              type="text"
               value={skillName}
               onChange={(e) =>
                 setSkillName(e.target.value)
@@ -408,15 +475,23 @@ function AdminDashboard() {
               className="w-full p-3 bg-slate-900 border rounded"
             />
 
+            <input
+              type="number"
+              value={skillLevel}
+              onChange={(e) =>
+                setSkillLevel(e.target.value)
+              }
+              className="w-full p-3 bg-slate-900 border rounded"
+            />
+
             <button
               onClick={addSkill}
               className="bg-blue-500 px-4 py-2 rounded"
             >
-              <Plus size={18} />
               Add Skill
             </button>
 
-            <div className="space-y-2 mt-4">
+            <div className="space-y-2">
 
               {skills.map((skill) => (
 
@@ -425,13 +500,105 @@ function AdminDashboard() {
                   className="flex justify-between bg-slate-700 p-3 rounded"
                 >
 
-                  <p>{skill.name}</p>
+                  {skill.name} {skill.level}%
 
                   <button
                     onClick={() =>
                       deleteSkill(skill.id)
                     }
-                    className="text-red-400"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+          {/* CERTIFICATE */}
+
+          <div className="bg-slate-800 p-6 rounded-xl space-y-4">
+
+            <h2 className="text-xl font-semibold">
+              Add Certificate
+            </h2>
+
+            <input
+              name="title"
+              value={certificateForm.title}
+              onChange={handleCertificateChange}
+              placeholder="Certificate Title"
+              className="w-full p-3 bg-slate-900 border rounded"
+            />
+
+            <input
+              name="issuer"
+              value={certificateForm.issuer}
+              onChange={handleCertificateChange}
+              placeholder="Issuer"
+              className="w-full p-3 bg-slate-900 border rounded"
+            />
+
+            <input
+              name="link"
+              value={certificateForm.link}
+              onChange={handleCertificateChange}
+              placeholder="Certificate Link"
+              className="w-full p-3 bg-slate-900 border rounded"
+            />
+
+            <label className="flex items-center gap-2 bg-slate-700 px-4 py-2 rounded cursor-pointer">
+
+              <Upload size={18} />
+
+              Upload Certificate Image
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleCertificateFile}
+                className="hidden"
+              />
+
+            </label>
+
+            {certificateForm.imageFile && (
+
+              <p className="text-green-400 text-sm">
+                Selected:
+                {" "}
+                {certificateForm.imageFile.name}
+              </p>
+
+            )}
+
+            <button
+              onClick={addCertificate}
+              className="bg-purple-500 px-4 py-2 rounded"
+            >
+              Add Certificate
+            </button>
+
+            <div className="space-y-2">
+
+              {certificates.map((certificate) => (
+
+                <div
+                  key={certificate.id}
+                  className="flex justify-between bg-slate-700 p-3 rounded"
+                >
+
+                  {certificate.title}
+
+                  <button
+                    onClick={() =>
+                      deleteCertificate(
+                        certificate.id
+                      )
+                    }
                   >
                     <Trash2 size={18} />
                   </button>
