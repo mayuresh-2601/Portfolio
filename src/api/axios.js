@@ -1,13 +1,41 @@
 import axios from "axios";
 
+/*
+========================================
+BASE URL
+========================================
+*/
+
+const baseURL =
+  import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api`
+    : "http://localhost:5000/api";
+
+/*
+========================================
+AXIOS INSTANCE
+========================================
+*/
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    "http://localhost:5000"
+  baseURL,
+  withCredentials: true
 });
+
+/*
+========================================
+REQUEST INTERCEPTOR
+========================================
+*/
 
 api.interceptors.request.use(
   (config) => {
+
+    /*
+    ----------------------------------------
+    ADD JWT TOKEN
+    ----------------------------------------
+    */
 
     const token =
       localStorage.getItem("token");
@@ -17,8 +45,11 @@ api.interceptors.request.use(
         `Bearer ${token}`;
     }
 
-    // IMPORTANT FIX
-    // Let browser set multipart/form-data automatically
+    /*
+    ----------------------------------------
+    CONTENT TYPE
+    ----------------------------------------
+    */
 
     if (
       !(config.data instanceof FormData)
@@ -33,6 +64,41 @@ api.interceptors.request.use(
 
   (error) =>
     Promise.reject(error)
+);
+
+/*
+========================================
+RESPONSE INTERCEPTOR
+========================================
+*/
+
+api.interceptors.response.use(
+
+  (response) => response,
+
+  (error) => {
+
+    /*
+    Handle token expiration
+    */
+
+    if (
+      error.response &&
+      error.response.status === 401
+    ) {
+
+      localStorage.removeItem(
+        "token"
+      );
+
+      window.location.href =
+        "/admin";
+
+    }
+
+    return Promise.reject(error);
+
+  }
 );
 
 export default api;

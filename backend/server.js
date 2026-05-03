@@ -11,11 +11,9 @@ import morgan from "morgan";
 import { fileURLToPath } from "url";
 
 /* DATABASE */
-
 import db from "./config/db.js";
 
 /* ROUTES */
-
 import authRoutes from "./routes/authRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
@@ -23,7 +21,6 @@ import messageRoutes from "./routes/messageRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
 
 /* MIDDLEWARE */
-
 import {
   errorHandler,
   notFound
@@ -41,7 +38,7 @@ const app = express();
 
 /*
 ========================================
-RESOLVE DIRECTORY
+PATH RESOLVE
 ========================================
 */
 
@@ -58,10 +55,7 @@ CREATE UPLOADS FOLDER
 */
 
 const uploadsPath =
-  path.join(
-    __dirname,
-    "uploads"
-  );
+  path.join(__dirname, "uploads");
 
 if (!fs.existsSync(uploadsPath)) {
 
@@ -70,15 +64,13 @@ if (!fs.existsSync(uploadsPath)) {
     { recursive: true }
   );
 
-  console.log(
-    "Uploads folder created"
-  );
+  console.log("Uploads folder created");
 
 }
 
 /*
 ========================================
-SECURITY (FIXED)
+SECURITY
 ========================================
 */
 
@@ -100,13 +92,15 @@ app.use(morgan("dev"));
 
 /*
 ========================================
-CORS (FIXED)
+CORS
 ========================================
 */
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin:
+      process.env.FRONTEND_URL ||
+      "http://localhost:5173",
     credentials: true
   })
 );
@@ -127,7 +121,7 @@ app.use(
 
 /*
 ========================================
-STATIC UPLOAD FOLDER
+STATIC UPLOADS
 ========================================
 */
 
@@ -136,24 +130,6 @@ app.use(
   express.static(
     uploadsPath
   )
-);
-
-/*
-========================================
-ROOT ROUTE
-========================================
-*/
-
-app.get(
-  "/",
-  (req, res) => {
-
-    res.json({
-      message:
-        "Backend server is running"
-    });
-
-  }
 );
 
 /*
@@ -189,59 +165,45 @@ app.use(
 
 /*
 ========================================
-MULTER ERROR HANDLER
+SERVE REACT BUILD
 ========================================
 */
 
+const frontendPath =
+  path.join(
+    __dirname,
+    "../dist"
+  );
+
 app.use(
-  (err, req, res, next) => {
-
-    if (err.name === "MulterError") {
-
-      console.error(
-        "Multer error:",
-        err
-      );
-
-      if (
-        err.code ===
-        "LIMIT_FILE_SIZE"
-      ) {
-
-        return res.status(400).json({
-          message:
-            "File size must be less than 10MB"
-        });
-
-      }
-
-      return res.status(400).json({
-        message:
-          err.message
-      });
-
-    }
-
-    if (
-      err.message ===
-      "Only image files or PDF allowed"
-    ) {
-
-      return res.status(400).json({
-        message:
-          err.message
-      });
-
-    }
-
-    next(err);
-
-  }
+  express.static(
+    frontendPath
+  )
 );
 
 /*
+SAFE CATCH-ALL ROUTE (Express 5 compatible)
+*/
+
+app.use((req, res, next) => {
+
+  // If API route, continue
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+
+  res.sendFile(
+    path.join(
+      frontendPath,
+      "index.html"
+    )
+  );
+
+});
+
+/*
 ========================================
-404 + GLOBAL ERROR
+ERROR HANDLING
 ========================================
 */
 
@@ -262,9 +224,7 @@ app.listen(
   PORT,
   () => {
 
-    console.log(
-      "================================"
-    );
+    console.log("================================");
 
     console.log(
       `Server running on port ${PORT}`
@@ -274,9 +234,7 @@ app.listen(
       `Uploads path: ${uploadsPath}`
     );
 
-    console.log(
-      "================================"
-    );
+    console.log("================================");
 
   }
-); 
+);
