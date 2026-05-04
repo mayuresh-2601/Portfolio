@@ -1,33 +1,16 @@
 import axios from "axios";
 
-/*
-========================================
-BASE URL FIXED (NO DOUBLE /api)
-========================================
-*/
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-/*
-========================================
-AXIOS INSTANCE
-========================================
-*/
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000";
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`, // ALWAYS SINGLE /api
+  baseURL: `${API_URL}/api`, // ONE /api only
   withCredentials: true
 });
 
-/*
-========================================
-REQUEST INTERCEPTOR
-========================================
-*/
-
 api.interceptors.request.use(
   (config) => {
-
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -43,21 +26,13 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/*
-========================================
-RESPONSE INTERCEPTOR
-========================================
-*/
-
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-
-    if (error.response && error.response.status === 401) {
+    if (error.response?.status === 401) {
       localStorage.removeItem("token");
       window.location.href = "/admin";
     }
-
     return Promise.reject(error);
   }
 );

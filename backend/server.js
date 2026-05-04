@@ -92,15 +92,13 @@ app.use(morgan("dev"));
 
 /*
 ========================================
-CORS
+CORS (FIX FOR RENDER)
 ========================================
 */
 
 app.use(
   cors({
-    origin:
-      process.env.FRONTEND_URL ||
-      "http://localhost:5173",
+    origin: true, // allow all (important for render)
     credentials: true
   })
 );
