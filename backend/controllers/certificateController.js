@@ -1,6 +1,6 @@
+/* eslint-disable no-undef */
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 import {
   getCertificates,
@@ -11,86 +11,40 @@ import {
 
 /*
 ========================================
-RESOLVE DIRECTORY
+FIX PATH FOR RENDER
 ========================================
 */
 
-const __filename =
-  fileURLToPath(import.meta.url);
-
-const __dirname =
-  path.dirname(__filename);
-
-const uploadsPath =
-  path.join(
-    __dirname,
-    "..",
-    "uploads"
-  );
+const uploadsPath = path.join(process.cwd(), "backend", "uploads");
 
 /*
 ========================================
-GET CERTIFICATES
+GET ALL CERTIFICATES
 ========================================
 */
 
-export const fetchCertificates = async (
-  req,
-  res
-) => {
-
+export const fetchCertificates = async (req, res) => {
   try {
+    console.log("fetchCertificates called");
 
-    console.log(
-      "fetchCertificates called"
-    );
+    const certificates = await getCertificates();
 
-    const certificates =
-      await getCertificates();
+    const formattedCertificates = certificates.map((cert) => {
+      if (cert.image && !cert.image.startsWith("/uploads")) {
+        cert.image = `/uploads/${cert.image}`;
+      }
+      return cert;
+    });
 
-    const formattedCertificates =
-      certificates.map(
-        (cert) => {
-
-          if (
-            cert.image &&
-            !cert.image.startsWith(
-              "/uploads"
-            )
-          ) {
-
-            cert.image =
-              `/uploads/${cert.image}`;
-
-          }
-
-          return cert;
-
-        }
-      );
-
-    return res
-      .status(200)
-      .json(
-        formattedCertificates
-      );
+    return res.status(200).json(formattedCertificates);
 
   } catch (error) {
+    console.error("Fetch certificates error:", error);
 
-    console.error(
-      "Fetch certificates error:",
-      error
-    );
-
-    return res
-      .status(500)
-      .json({
-        message:
-          "Failed to fetch certificates"
-      });
-
+    return res.status(500).json({
+      message: error.message || "Failed to fetch certificates"
+    });
   }
-
 };
 
 /*
@@ -99,227 +53,108 @@ CREATE CERTIFICATE
 ========================================
 */
 
-export const createCertificate = async (
-  req,
-  res
-) => {
-
+export const createCertificate = async (req, res) => {
   try {
+    console.log("createCertificate called");
 
-    console.log(
-      "createCertificate called"
-    );
+    const { title, issuer, link } = req.body;
 
-    const {
-      title,
-      issuer,
-      link
-    } = req.body;
-
-    if (
-      !title ||
-      !title.trim()
-    ) {
-
-      return res
-        .status(400)
-        .json({
-          message:
-            "Certificate title is required"
-        });
-
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        message: "Certificate title is required"
+      });
     }
 
     let imageFile = null;
 
     if (req.file) {
-
-      imageFile =
-        `/uploads/${req.file.filename}`;
-
+      imageFile = req.file.filename; // 🔥 store only filename
     }
 
     const certificate = {
-
-      title:
-        title.trim(),
-
-      issuer:
-        issuer || "",
-
-      image:
-        imageFile,
-
-      link:
-        link || ""
-
+      title: title.trim(),
+      issuer: issuer || "",
+      image: imageFile,
+      link: link || ""
     };
 
-    const result =
-      await addCertificate(
-        certificate
-      );
+    const result = await addCertificate(certificate);
 
-    console.log(
-      "Certificate saved:",
-      result.insertId
-    );
-
-    return res
-      .status(201)
-      .json({
-
-        message:
-          "Certificate added successfully",
-
-        id:
-          result.insertId
-
-      });
+    return res.status(201).json({
+      success: true,
+      message: "Certificate added successfully",
+      id: result?.insertId || null
+    });
 
   } catch (error) {
+    console.error("Create certificate error:", error);
 
-    console.error(
-      "Create certificate error:",
-      error
-    );
-
-    return res
-      .status(500)
-      .json({
-        message:
-          "Failed to add certificate"
-      });
-
+    return res.status(500).json({
+      message: error.message || "Failed to add certificate"
+    });
   }
-
 };
 
 /*
 ========================================
-DELETE CERTIFICATE + IMAGE
+DELETE CERTIFICATE
 ========================================
 */
 
-export const removeCertificate = async (
-  req,
-  res
-) => {
-
+export const removeCertificate = async (req, res) => {
   try {
+    console.log("removeCertificate called");
 
-    console.log(
-      "removeCertificate called"
-    );
-
-    const { id } =
-      req.params;
+    const { id } = req.params;
 
     if (!id) {
-
-      return res
-        .status(400)
-        .json({
-          message:
-            "Certificate ID is required"
-        });
-
+      return res.status(400).json({
+        message: "Certificate ID is required"
+      });
     }
 
-    /*
-    Get certificate first
-    */
+    let certificate = await getCertificateById(id);
 
-    const certificate =
-      await getCertificateById(
-        id
-      );
+    // 🔥 FIX: handle array result
+    if (Array.isArray(certificate)) {
+      certificate = certificate[0];
+    }
 
     if (!certificate) {
-
-      return res
-        .status(404)
-        .json({
-          message:
-            "Certificate not found"
-        });
-
+      return res.status(404).json({
+        message: "Certificate not found"
+      });
     }
 
     /*
-    Delete image file
+    DELETE IMAGE SAFELY
     */
 
     if (certificate.image) {
+      try {
+        const filePath = path.join(uploadsPath, certificate.image);
 
-      const filename =
-        certificate.image.replace(
-          "/uploads/",
-          ""
-        );
-
-      const filePath =
-        path.join(
-          uploadsPath,
-          filename
-        );
-
-      if (
-        fs.existsSync(filePath)
-      ) {
-
-        fs.unlinkSync(filePath);
-
-        console.log(
-          "Deleted image:",
-          filename
-        );
-
-      } else {
-
-        console.log(
-          "Image file not found:",
-          filename
-        );
-
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log("Deleted image:", certificate.image);
+        }
+      } catch (err) {
+        console.warn("Image delete failed:", err.message);
       }
-
     }
-
-    /*
-    Delete DB record
-    */
 
     await deleteCertificate(id);
 
-    console.log(
-      "Certificate deleted:",
-      id
-    );
-
-    return res
-      .status(200)
-      .json({
-
-        message:
-          "Certificate deleted successfully"
-
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Certificate deleted successfully"
+    });
 
   } catch (error) {
+    console.error("Delete certificate error:", error);
 
-    console.error(
-      "Delete certificate error:",
-      error
-    );
-
-    return res
-      .status(500)
-      .json({
-        message:
-          "Failed to delete certificate"
-      });
-
+    return res.status(500).json({
+      message: error.message || "Failed to delete certificate"
+    });
   }
-
 };

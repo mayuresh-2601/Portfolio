@@ -5,110 +5,95 @@ import {
 
 import sendEmail from "../utils/sendEmail.js";
 
-export const createMessage =
-  async (req, res) => {
+/*
+========================================
+CREATE MESSAGE
+========================================
+*/
+
+export const createMessage = async (req, res) => {
+  try {
+    console.log("createMessage called");
+
+    const { name, email, message } = req.body;
+
+    /*
+    VALIDATION
+    */
+
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required"
+      });
+    }
+
+    /*
+    SAVE MESSAGE (NO FILE FIELD IN DB)
+    */
+
+    await addMessage({
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim()
+    });
+
+    console.log("Saved to database");
+
+    /*
+    SEND EMAIL (SAFE - WILL NOT CRASH APP)
+    */
 
     try {
-
-      console.log(
-        "createMessage called"
-      );
-
-      const {
+      await sendEmail({
         name,
         email,
         message
-      } = req.body;
-
-      if (
-        !name ||
-        !email ||
-        !message
-      ) {
-
-        return res.status(400)
-          .json({
-            message:
-              "All fields required"
-          });
-
-      }
-
-      const fileName =
-        req.file
-          ? req.file.filename
-          : null;
-
-      await addMessage({
-
-        name,
-        email,
-        message,
-        file: fileName
-
       });
 
-      console.log(
-        "Saved to database"
-      );
+      console.log("Email sent successfully");
 
-      await sendEmail({
-
-        name,
-        email,
-        message,
-        file: fileName
-
-      });
-
-      console.log(
-        "Email function finished"
-      );
-
-      res.status(201).json({
-
-        message:
-          "Message sent successfully"
-
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-
-        message:
-          "Failed to send message"
-
-      });
-
+    } catch (emailError) {
+      console.warn("Email failed:", emailError.message);
     }
 
-  };
+    /*
+    SUCCESS RESPONSE
+    */
 
-export const fetchMessages =
-  async (req, res) => {
+    return res.status(201).json({
+      success: true,
+      message: "Message sent successfully"
+    });
 
-    try {
+  } catch (error) {
+    console.error("Create message error:", error);
 
-      const messages =
-        await getMessages();
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to send message"
+    });
+  }
+};
 
-      res.status(200)
-        .json(messages);
+/*
+========================================
+GET ALL MESSAGES
+========================================
+*/
 
-    } catch (error) {
+export const fetchMessages = async (req, res) => {
+  try {
+    const messages = await getMessages();
 
-      console.error(error);
+    return res.status(200).json(messages || []);
 
-      res.status(500).json({
+  } catch (error) {
+    console.error("Fetch messages error:", error);
 
-        message:
-          "Failed to fetch messages"
-
-      });
-
-    }
-
-  };
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to fetch messages"
+    });
+  }
+};

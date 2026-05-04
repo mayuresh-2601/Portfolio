@@ -5,35 +5,38 @@ import {
   fetchMessages
 } from "../controllers/messageController.js";
 
-import {
-  protect
-} from "../middleware/authMiddleware.js";
-
-import upload from "../middleware/uploadMiddleware.js";
-
-const router =
-  express.Router();
+import { protect } from "../middleware/authMiddleware.js";
 
 /*
-  SEND MESSAGE
-  PUBLIC
+========================================
+MESSAGE ROUTES
+========================================
 */
 
-router.post(
-  "/",
-  upload.single("file"),
-  createMessage
-);
+const router = express.Router();
 
 /*
-  GET MESSAGES
-  ADMIN
+========================================
+SEND MESSAGE (PUBLIC)
+POST /api/messages
+========================================
 */
 
-router.get(
-  "/",
-  protect,
-  fetchMessages
-);
+router.post("/", createMessage);
+
+/*
+========================================
+GET MESSAGES (ADMIN)
+GET /api/messages
+========================================
+*/
+
+router.get("/", protect, fetchMessages);
+
+/*
+========================================
+EXPORT
+========================================
+*/
 
 export default router;

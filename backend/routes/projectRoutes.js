@@ -7,114 +7,57 @@ import {
   updateProjectById
 } from "../controllers/projectController.js";
 
-import {
-  protect
-} from "../middleware/authMiddleware.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { uploadSingle } from "../middleware/uploadMiddleware.js";
 
-import upload from "../middleware/uploadMiddleware.js";
+/*
+========================================
+PROJECT ROUTES
+========================================
+*/
 
 const router = express.Router();
 
 /*
 ========================================
-GET ALL PROJECTS
-Public
+GET ALL PROJECTS (PUBLIC)
 GET /api/projects
 ========================================
 */
 
-router.get(
-  "/",
-  fetchProjects
-);
+router.get("/", fetchProjects);
 
 /*
 ========================================
-CREATE PROJECT
-Protected
+CREATE PROJECT (PROTECTED)
 POST /api/projects
-Handles image upload
 ========================================
 */
 
 router.post(
   "/",
   protect,
-  (req, res, next) => {
-    upload.single("image")(req, res, function (err) {
-
-      // Multer error (file too large etc.)
-      if (err) {
-
-        console.error("Upload error:", err);
-
-        // File size error
-        if (err.code === "LIMIT_FILE_SIZE") {
-          return res.status(400).json({
-            message:
-              "File size must be less than 10MB"
-          });
-        }
-
-        // Invalid file type
-        return res.status(400).json({
-          message:
-            err.message ||
-            "File upload failed"
-        });
-
-      }
-
-      next();
-    });
-  },
+  uploadSingle("image"), // 🔥 SAFE upload handler
   createProject
 );
 
 /*
 ========================================
-UPDATE PROJECT
-Protected
+UPDATE PROJECT (PROTECTED)
 PUT /api/projects/:id
-Handles image upload
 ========================================
 */
 
 router.put(
   "/:id",
   protect,
-  (req, res, next) => {
-    upload.single("image")(req, res, function (err) {
-
-      if (err) {
-
-        console.error("Upload error:", err);
-
-        if (err.code === "LIMIT_FILE_SIZE") {
-          return res.status(400).json({
-            message:
-              "File size must be less than 10MB"
-          });
-        }
-
-        return res.status(400).json({
-          message:
-            err.message ||
-            "File upload failed"
-        });
-
-      }
-
-      next();
-    });
-  },
+  uploadSingle("image"), // 🔥 SAFE upload handler
   updateProjectById
 );
 
 /*
 ========================================
-DELETE PROJECT
-Protected
+DELETE PROJECT (PROTECTED)
 DELETE /api/projects/:id
 ========================================
 */
@@ -124,5 +67,11 @@ router.delete(
   protect,
   removeProject
 );
+
+/*
+========================================
+EXPORT
+========================================
+*/
 
 export default router;

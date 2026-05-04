@@ -1,27 +1,23 @@
+/* eslint-disable preserve-caught-error */
 import db from "../config/db.js";
 
 /*
-  ADD SKILL
-  name: string
-  level: number (0–100)
+========================================
+ADD SKILL
+========================================
 */
 
-export const addSkill = async (
-  name,
-  level = 80
-) => {
-
+export const addSkill = async (name, level = 80) => {
   try {
-
-    /* Ensure level is valid */
-
-    if (!level || level < 0) {
-      level = 0;
+    if (!name || !name.trim()) {
+      throw new Error("Skill name is required");
     }
 
-    if (level > 100) {
-      level = 100;
-    }
+    let skillLevel = parseInt(level);
+
+    if (isNaN(skillLevel)) skillLevel = 80;
+    if (skillLevel < 0) skillLevel = 0;
+    if (skillLevel > 100) skillLevel = 100;
 
     const query = `
       INSERT INTO skills
@@ -29,96 +25,63 @@ export const addSkill = async (
       VALUES (?, ?)
     `;
 
-    const values = [
-      name,
-      level
-    ];
+    const values = [name.trim(), skillLevel];
 
-    const [result] =
-      await db.execute(
-        query,
-        values
-      );
+    const [result] = await db.execute(query, values);
 
-    return result;
+    return result || null;
 
   } catch (error) {
-
-    console.error(
-      "Add Skill Error:",
-      error
-    );
-
-    throw error;
-
+    console.error("Add Skill Error:", error);
+    throw new Error(error.message || "Failed to add skill");
   }
-
 };
 
 /*
-  GET ALL SKILLS
+========================================
+GET ALL SKILLS
+========================================
 */
 
-export const getSkills =
-  async () => {
+export const getSkills = async () => {
+  try {
+    const query = `
+      SELECT *
+      FROM skills
+      ORDER BY id DESC
+    `;
 
-    try {
+    const [rows] = await db.execute(query);
 
-      const query = `
-        SELECT *
-        FROM skills
-        ORDER BY id DESC
-      `;
+    return rows || [];
 
-      const [rows] =
-        await db.execute(
-          query
-        );
-
-      return rows;
-
-    } catch (error) {
-
-      console.error(
-        "Get Skills Error:",
-        error
-      );
-
-      throw error;
-
-    }
-
-  };
+  } catch (error) {
+    console.error("Get Skills Error:", error);
+    throw new Error(error.message || "Failed to fetch skills");
+  }
+};
 
 /*
-  DELETE SKILL
+========================================
+DELETE SKILL
+========================================
 */
 
-export const deleteSkill =
-  async (id) => {
-
-    try {
-
-      const query =
-        "DELETE FROM skills WHERE id = ?";
-
-      const [result] =
-        await db.execute(
-          query,
-          [id]
-        );
-
-      return result;
-
-    } catch (error) {
-
-      console.error(
-        "Delete Skill Error:",
-        error
-      );
-
-      throw error;
-
+export const deleteSkill = async (id) => {
+  try {
+    if (!id || isNaN(id)) {
+      return null;
     }
 
-  };
+    const query =
+      "DELETE FROM skills WHERE id = ?";
+
+    const [result] = await db.execute(query, [id]);
+
+    return result || null;
+
+  } catch (error) {
+    console.error("Delete Skill Error:", error);
+    throw new Error(error.message || "Failed to delete skill");
+  }
+};

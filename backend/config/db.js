@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// ---------------- Validate Environment Variables ----------------
-
 const requiredEnv = [
   "DB_HOST",
   "DB_USER",
@@ -20,8 +18,6 @@ requiredEnv.forEach((key) => {
   }
 });
 
-// ---------------- Create Connection Pool ----------------
-
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -34,8 +30,6 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-// ---------------- Test Connection ----------------
-
 (async () => {
   try {
     const conn = await db.getConnection();
@@ -46,7 +40,5 @@ const db = mysql.createPool({
     process.exit(1);
   }
 })();
-
-// ---------------- Export ----------------
 
 export default db;

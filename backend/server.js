@@ -42,11 +42,8 @@ PATH RESOLVE
 ========================================
 */
 
-const __filename =
-  fileURLToPath(import.meta.url);
-
-const __dirname =
-  path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /*
 ========================================
@@ -54,18 +51,11 @@ CREATE UPLOADS FOLDER
 ========================================
 */
 
-const uploadsPath =
-  path.join(__dirname, "uploads");
+const uploadsPath = path.join(__dirname, "uploads");
 
 if (!fs.existsSync(uploadsPath)) {
-
-  fs.mkdirSync(
-    uploadsPath,
-    { recursive: true }
-  );
-
+  fs.mkdirSync(uploadsPath, { recursive: true });
   console.log("Uploads folder created");
-
 }
 
 /*
@@ -92,13 +82,13 @@ app.use(morgan("dev"));
 
 /*
 ========================================
-CORS (FIX FOR RENDER)
+CORS
 ========================================
 */
 
 app.use(
   cors({
-    origin: true, // allow all (important for render)
+    origin: true,
     credentials: true
   })
 );
@@ -110,12 +100,7 @@ BODY PARSER
 */
 
 app.use(express.json());
-
-app.use(
-  express.urlencoded({
-    extended: true
-  })
-);
+app.use(express.urlencoded({ extended: true }));
 
 /*
 ========================================
@@ -123,12 +108,17 @@ STATIC UPLOADS
 ========================================
 */
 
-app.use(
-  "/uploads",
-  express.static(
-    uploadsPath
-  )
-);
+app.use("/uploads", express.static(uploadsPath));
+
+/*
+========================================
+TEST ROUTE (VERY IMPORTANT)
+========================================
+*/
+
+app.get("/api/test", (req, res) => {
+  res.json({ message: "API WORKING ✅" });
+});
 
 /*
 ========================================
@@ -136,67 +126,26 @@ API ROUTES
 ========================================
 */
 
-app.use(
-  "/api/auth",
-  authRoutes
-);
-
-app.use(
-  "/api/projects",
-  projectRoutes
-);
-
-app.use(
-  "/api/skills",
-  skillRoutes
-);
-
-app.use(
-  "/api/messages",
-  messageRoutes
-);
-
-app.use(
-  "/api/certificates",
-  certificateRoutes
-);
+app.use("/api/auth", authRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/certificates", certificateRoutes);
 
 /*
 ========================================
-SERVE REACT BUILD
+SERVE FRONTEND
 ========================================
 */
 
-const frontendPath =
-  path.join(
-    __dirname,
-    "../dist"
-  );
+const frontendPath = path.join(__dirname, "../dist");
 
-app.use(
-  express.static(
-    frontendPath
-  )
-);
+app.use(express.static(frontendPath));
 
-/*
-SAFE CATCH-ALL ROUTE (Express 5 compatible)
-*/
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) return;
 
-app.use((req, res, next) => {
-
-  // If API route, continue
-  if (req.path.startsWith("/api")) {
-    return next();
-  }
-
-  res.sendFile(
-    path.join(
-      frontendPath,
-      "index.html"
-    )
-  );
-
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 /*
@@ -207,32 +156,25 @@ ERROR HANDLING
 
 app.use(notFound);
 
-app.use(errorHandler);
+app.use((err, req, res, next) => {
+  console.error("🔥 SERVER ERROR:", err); // IMPORTANT LOG
+  res.status(500).json({
+    success: false,
+    message: err.message || "Server Error"
+  });
+});
 
 /*
 ========================================
-SERVER START
+SERVER START (FIXED FOR RENDER)
 ========================================
 */
 
-const PORT =
-  process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
-app.listen(
-  PORT,
-  () => {
-
-    console.log("================================");
-
-    console.log(
-      `Server running on port ${PORT}`
-    );
-
-    console.log(
-      `Uploads path: ${uploadsPath}`
-    );
-
-    console.log("================================");
-
-  }
-);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("================================");
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Uploads path: ${uploadsPath}`);
+  console.log("================================");
+});

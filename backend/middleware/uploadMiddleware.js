@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -12,11 +14,13 @@ RESOLVE DIRECTORY
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const uploadPath = path.join(
-  __dirname,
-  "..",
-  "uploads"
-);
+/*
+========================================
+FIXED UPLOAD PATH (RENDER SAFE)
+========================================
+*/
+
+const uploadPath = path.join(process.cwd(), "backend", "uploads");
 
 /*
 ========================================
@@ -25,15 +29,8 @@ CREATE UPLOADS FOLDER IF MISSING
 */
 
 if (!fs.existsSync(uploadPath)) {
-
-  fs.mkdirSync(uploadPath, {
-    recursive: true
-  });
-
-  console.log(
-    "Uploads folder created"
-  );
-
+  fs.mkdirSync(uploadPath, { recursive: true });
+  console.log("Uploads folder created at:", uploadPath);
 }
 
 /*
@@ -43,34 +40,26 @@ STORAGE CONFIG
 */
 
 const storage = multer.diskStorage({
-
   destination: (req, file, cb) => {
-
     cb(null, uploadPath);
-
   },
 
   filename: (req, file, cb) => {
+    try {
+      const uniqueName =
+        Date.now() +
+        "-" +
+        Math.round(Math.random() * 1e9) +
+        path.extname(file.originalname);
 
-    const uniqueName =
-      Date.now() +
-      "-" +
-      Math.round(
-        Math.random() * 1e9
-      ) +
-      path.extname(
-        file.originalname
-      );
+      console.log("Saving file as:", uniqueName);
 
-    console.log(
-      "Saving file as:",
-      uniqueName
-    );
-
-    cb(null, uniqueName);
-
+      cb(null, uniqueName);
+    } catch (err) {
+      console.error("Filename error:", err);
+      cb(err);
+    }
   }
-
 });
 
 /*
@@ -79,60 +68,27 @@ FILE FILTER
 ========================================
 */
 
-const fileFilter = (
-  req,
-  file,
-  cb
-) => {
+const fileFilter = (req, file, cb) => {
+  try {
+    console.log("File received:", file.originalname);
+    console.log("MIME type:", file.mimetype);
 
-  console.log(
-    "File received:",
-    file.originalname
-  );
+    // Allow images
+    if (file.mimetype.startsWith("image/")) {
+      return cb(null, true);
+    }
 
-  console.log(
-    "MIME type:",
-    file.mimetype
-  );
+    // Allow PDF
+    if (file.mimetype === "application/pdf") {
+      return cb(null, true);
+    }
 
-  /*
-  Allow any image
-  */
+    return cb(new Error("Only image or PDF allowed"), false);
 
-  if (
-    file.mimetype.startsWith(
-      "image/"
-    )
-  ) {
-
-    return cb(null, true);
-
+  } catch (err) {
+    console.error("File filter error:", err);
+    cb(err);
   }
-
-  /*
-  Allow PDF
-  */
-
-  if (
-    file.mimetype ===
-    "application/pdf"
-  ) {
-
-    return cb(null, true);
-
-  }
-
-  /*
-  Reject other types
-  */
-
-  return cb(
-    new Error(
-      "Only image files or PDF allowed"
-    ),
-    false
-  );
-
 };
 
 /*
@@ -142,24 +98,32 @@ MULTER CONFIG
 */
 
 const upload = multer({
-
   storage,
-
   fileFilter,
-
   limits: {
-
-    fileSize:
-      10 * 1024 * 1024
-
+    fileSize: 10 * 1024 * 1024 // 10MB
   }
-
 });
 
 /*
 ========================================
-EXPORT
+SAFE WRAPPER (VERY IMPORTANT)
 ========================================
 */
+
+export const uploadSingle = (fieldName) => (req, res, next) => {
+  const handler = upload.single(fieldName);
+
+  handler(req, res, function (err) {
+    if (err) {
+      console.error("Upload error:", err);
+      return res.status(500).json({
+        success: false,
+        message: err.message || "Upload failed"
+      });
+    }
+    next();
+  });
+};
 
 export default upload;

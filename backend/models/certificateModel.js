@@ -1,3 +1,4 @@
+/* eslint-disable preserve-caught-error */
 import db from "../config/db.js";
 
 /*
@@ -7,66 +8,46 @@ GET ALL CERTIFICATES
 */
 
 export const getCertificates = async () => {
-
   try {
-
     const query = `
       SELECT *
       FROM certificates
       ORDER BY id DESC
     `;
 
-    const [rows] =
-      await db.execute(query);
+    const [rows] = await db.execute(query);
 
-    return rows;
+    return rows || [];
 
   } catch (error) {
-
-    console.error(
-      "Get Certificates Error:",
-      error
-    );
-
-    throw error;
-
+    console.error("Get Certificates Error:", error);
+    throw new Error(error.message || "Failed to fetch certificates");
   }
-
 };
 
 /*
 ========================================
 GET CERTIFICATE BY ID
-(Required to delete image file)
 ========================================
 */
 
 export const getCertificateById = async (id) => {
-
   try {
+    if (!id || isNaN(id)) {
+      return null;
+    }
 
     const query =
       "SELECT * FROM certificates WHERE id = ?";
 
-    const [rows] =
-      await db.execute(
-        query,
-        [id]
-      );
+    const [rows] = await db.execute(query, [id]);
 
-    return rows[0];
+    return rows && rows.length ? rows[0] : null;
 
   } catch (error) {
-
-    console.error(
-      "Get Certificate By ID Error:",
-      error
-    );
-
-    throw error;
-
+    console.error("Get Certificate By ID Error:", error);
+    throw new Error(error.message || "Failed to get certificate");
   }
-
 };
 
 /*
@@ -76,9 +57,7 @@ ADD CERTIFICATE
 */
 
 export const addCertificate = async (certificate) => {
-
   try {
-
     const query = `
       INSERT INTO certificates
       (
@@ -91,33 +70,20 @@ export const addCertificate = async (certificate) => {
     `;
 
     const values = [
-
       certificate.title || "",
       certificate.issuer || "",
       certificate.image || null,
       certificate.link || ""
-
     ];
 
-    const [result] =
-      await db.execute(
-        query,
-        values
-      );
+    const [result] = await db.execute(query, values);
 
-    return result;
+    return result || null;
 
   } catch (error) {
-
-    console.error(
-      "Add Certificate Error:",
-      error
-    );
-
-    throw error;
-
+    console.error("Add Certificate Error:", error);
+    throw new Error(error.message || "Failed to add certificate");
   }
-
 };
 
 /*
@@ -127,29 +93,20 @@ DELETE CERTIFICATE
 */
 
 export const deleteCertificate = async (id) => {
-
   try {
+    if (!id || isNaN(id)) {
+      return null;
+    }
 
     const query =
       "DELETE FROM certificates WHERE id = ?";
 
-    const [result] =
-      await db.execute(
-        query,
-        [id]
-      );
+    const [result] = await db.execute(query, [id]);
 
-    return result;
+    return result || null;
 
   } catch (error) {
-
-    console.error(
-      "Delete Certificate Error:",
-      error
-    );
-
-    throw error;
-
+    console.error("Delete Certificate Error:", error);
+    throw new Error(error.message || "Failed to delete certificate");
   }
-
 };
