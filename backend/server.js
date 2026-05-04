@@ -55,7 +55,7 @@ const uploadsPath = path.join(__dirname, "uploads");
 
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
-  console.log("Uploads folder created");
+  console.log("📁 Uploads folder created");
 }
 
 /*
@@ -134,53 +134,63 @@ app.use("/api/certificates", certificateRoutes);
 
 /*
 ========================================
-SERVE FRONTEND
+SERVE FRONTEND (FIXED — NO "*")
 ========================================
 */
 
 const frontendPath = path.join(__dirname, "../dist");
 
-app.use(express.static(frontendPath));
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
 
-/*
-🔥 FIXED ROUTING (NO "*")
-*/
+  // ✅ FIXED VERSION (NO wildcard crash)
+  app.use((req, res, next) => {
+    if (req.originalUrl.startsWith("/api")) {
+      return next();
+    }
 
-app.use((req, res, next) => {
-  if (req.originalUrl.startsWith("/api")) {
-    return next();
-  }
-
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+}
 
 /*
 ========================================
-ERROR HANDLING
+404 HANDLER
 ========================================
 */
 
 app.use(notFound);
 
-app.use((err, req, res, next) => {
-  console.error("🔥 SERVER ERROR:", err);
-  res.status(500).json({
-    success: false,
-    message: err.message || "Server Error"
-  });
-});
-
 /*
 ========================================
-SERVER START
+GLOBAL ERROR HANDLER
 ========================================
 */
 
-const PORT = process.env.PORT || 5000;
+app.use(errorHandler);
 
-app.listen(PORT, "0.0.0.0", () => {
-  
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Uploads path: ${uploadsPath}`);
-  
-});
+/*
+========================================
+START SERVER
+========================================
+*/
+
+const startServer = async () => {
+  try {
+    await db.execute("SELECT 1");
+    console.log("✅ MySQL Connected");
+
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`📁 Uploads path: ${uploadsPath}`);
+    });
+
+  } catch (error) {
+    console.error("❌ DB Connection Failed:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

@@ -1,4 +1,7 @@
+/* eslint-disable no-unused-vars */
 import express from "express";
+import multer from "multer";
+import path from "path";
 
 import {
   createMessage,
@@ -7,13 +10,24 @@ import {
 
 import { protect } from "../middleware/authMiddleware.js";
 
+const router = express.Router();
+
 /*
 ========================================
-MESSAGE ROUTES
+MULTER CONFIG (FOR FILE UPLOAD)
 ========================================
 */
 
-const router = express.Router();
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "backend/uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
 
 /*
 ========================================
@@ -22,7 +36,7 @@ POST /api/messages
 ========================================
 */
 
-router.post("/", createMessage);
+router.post("/", upload.single("resume"), createMessage);
 
 /*
 ========================================
@@ -32,11 +46,5 @@ GET /api/messages
 */
 
 router.get("/", protect, fetchMessages);
-
-/*
-========================================
-EXPORT
-========================================
-*/
 
 export default router;

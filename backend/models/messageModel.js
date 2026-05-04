@@ -7,34 +7,32 @@ ADD MESSAGE
 ========================================
 */
 
-export const addMessage = async (message) => {
+export const addMessage = async (data) => {
   try {
-    if (
-      !message.name ||
-      !message.email ||
-      !message.message
-    ) {
+    // ✅ SAFE INPUT (prevents undefined crash)
+    const name = data?.name?.trim();
+    const email = data?.email?.trim();
+    const message = data?.message?.trim();
+
+    if (!name || !email || !message) {
       throw new Error("All fields are required");
     }
 
     const sql = `
-      INSERT INTO messages
-      (name, email, message)
+      INSERT INTO messages (name, email, message)
       VALUES (?, ?, ?)
     `;
 
-    const values = [
-      message.name.trim(),
-      message.email.trim(),
-      message.message.trim()
-    ];
+    const [result] = await db.execute(sql, [
+      name,
+      email,
+      message
+    ]);
 
-    const [result] = await db.execute(sql, values);
-
-    return result || null;
+    return result;
 
   } catch (error) {
-    console.error("Add Message Error:", error);
+    console.error("❌ Add Message Error:", error);
     throw new Error(error.message || "Failed to add message");
   }
 };
@@ -48,17 +46,17 @@ GET ALL MESSAGES
 export const getMessages = async () => {
   try {
     const sql = `
-      SELECT *
+      SELECT id, name, email, message
       FROM messages
       ORDER BY id DESC
     `;
 
     const [rows] = await db.execute(sql);
 
-    return rows || [];
+    return rows;
 
   } catch (error) {
-    console.error("Get Messages Error:", error);
+    console.error("❌ Get Messages Error:", error);
     throw new Error(error.message || "Failed to fetch messages");
   }
 };

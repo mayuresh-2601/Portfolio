@@ -13,9 +13,15 @@ CREATE MESSAGE
 
 export const createMessage = async (req, res) => {
   try {
-    console.log("createMessage called");
+    console.log("📩 createMessage called");
 
-    const { name, email, message } = req.body;
+    // ✅ SAFE BODY ACCESS (NO CRASH)
+    const name = req.body?.name;
+    const email = req.body?.email;
+    const message = req.body?.message;
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
     /*
     VALIDATION
@@ -29,7 +35,7 @@ export const createMessage = async (req, res) => {
     }
 
     /*
-    SAVE MESSAGE (NO FILE FIELD IN DB)
+    SAVE MESSAGE
     */
 
     await addMessage({
@@ -38,10 +44,10 @@ export const createMessage = async (req, res) => {
       message: message.trim()
     });
 
-    console.log("Saved to database");
+    console.log("✅ Saved to database");
 
     /*
-    SEND EMAIL (SAFE - WILL NOT CRASH APP)
+    SEND EMAIL (SAFE)
     */
 
     try {
@@ -51,14 +57,14 @@ export const createMessage = async (req, res) => {
         message
       });
 
-      console.log("Email sent successfully");
+      console.log("✅ Email sent");
 
     } catch (emailError) {
-      console.warn("Email failed:", emailError.message);
+      console.warn("⚠ Email failed:", emailError.message);
     }
 
     /*
-    SUCCESS RESPONSE
+    SUCCESS
     */
 
     return res.status(201).json({
@@ -67,7 +73,7 @@ export const createMessage = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Create message error:", error);
+    console.error("❌ Create message error:", error);
 
     return res.status(500).json({
       success: false,
@@ -89,7 +95,7 @@ export const fetchMessages = async (req, res) => {
     return res.status(200).json(messages || []);
 
   } catch (error) {
-    console.error("Fetch messages error:", error);
+    console.error("❌ Fetch messages error:", error);
 
     return res.status(500).json({
       success: false,
