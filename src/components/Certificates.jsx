@@ -34,7 +34,7 @@ function Certificates() {
 
         const response =
           await api.get(
-            "/api/certificates"
+            "/certificates"
           );
 
         if (

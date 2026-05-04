@@ -71,7 +71,7 @@ function Contact() {
       }
 
       await api.post(
-        "/api/messages",
+        "/messages",
         formData,
         {
           headers: {

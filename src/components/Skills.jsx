@@ -25,7 +25,7 @@ function Skills() {
       setError(null);
 
       const response = await api.get(
-        "/api/skills"
+        "/skills"
       );
 
       if (!response || !response.data) {

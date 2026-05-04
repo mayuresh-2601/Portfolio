@@ -53,9 +53,9 @@ function AdminDashboard() {
         skillsRes,
         certificatesRes
       ] = await Promise.all([
-        api.get("/api/projects"),
-        api.get("/api/skills"),
-        api.get("/api/certificates")
+        api.get("/projects"),
+        api.get("/skills"),
+        api.get("/certificates")
       ]);
 
       setProjects(projectsRes.data);
@@ -146,7 +146,7 @@ function AdminDashboard() {
       );
 
       await api.post(
-        "/api/projects",
+        "/projects",
         formData
       );
 
@@ -184,7 +184,7 @@ function AdminDashboard() {
     if (!window.confirm("Delete project?"))
       return;
 
-    await api.delete(`/api/projects/${id}`);
+    await api.delete(`/projects/${id}`);
 
     loadData();
 
@@ -199,7 +199,7 @@ function AdminDashboard() {
     if (!skillName.trim())
       return alert("Enter skill name");
 
-    await api.post("/api/skills", {
+    await api.post("/skills", {
       name: skillName,
       level: skillLevel
     });
@@ -216,7 +216,7 @@ function AdminDashboard() {
     if (!window.confirm("Delete skill?"))
       return;
 
-    await api.delete(`/api/skills/${id}`);
+    await api.delete(`/skills/${id}`);
 
     loadData();
 
@@ -293,7 +293,7 @@ function AdminDashboard() {
       );
 
       await api.post(
-        "/api/certificates",
+        "/certificates",
         formData
       );
 
@@ -326,7 +326,7 @@ function AdminDashboard() {
     if (!window.confirm("Delete certificate?"))
       return;
 
-    await api.delete(`/api/certificates/${id}`);
+    await api.delete(`/certificates/${id}`);
 
     loadData();
 

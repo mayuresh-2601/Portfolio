@@ -5,35 +5,34 @@ const API_URL =
   "http://localhost:5000";
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
-  withCredentials: true
+  baseURL: `${API_URL}/api`, // ONLY HERE
+  withCredentials: true,
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
+// REQUEST
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
-    if (!(config.data instanceof FormData)) {
-      config.headers["Content-Type"] = "application/json";
-    }
+  if (!(config.data instanceof FormData)) {
+    config.headers["Content-Type"] = "application/json";
+  }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  return config;
+});
 
+// RESPONSE
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
       localStorage.removeItem("token");
       window.location.href = "/admin";
     }
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
 

@@ -27,7 +27,7 @@ function Projects() {
       setError(null);
 
       const response = await api.get(
-        "/api/projects"
+        "/projects"
       );
 
       if (!response || !response.data) {
