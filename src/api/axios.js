@@ -5,7 +5,7 @@ const API_URL =
   "http://localhost:5000";
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`, // ONE /api only
+  baseURL: `${API_URL}/api`,
   withCredentials: true
 });
 

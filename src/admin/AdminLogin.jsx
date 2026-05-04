@@ -19,37 +19,33 @@ function AdminLogin() {
   // ---------------- Handle Input ----------------
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
     setFormData({
       ...formData,
       [name]: value,
     });
-
   };
 
   // ---------------- Handle Login ----------------
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     try {
-
       setLoading(true);
 
       console.log("Sending login request...");
 
+      // ✅ FIXED HERE (REMOVED /api)
       const response = await api.post(
-        "/api/auth/login",
+        "/auth/login",
         formData
       );
 
       console.log("Login response:", response.data);
 
       // Save token
-
       localStorage.setItem(
         "token",
         response.data.token
@@ -58,11 +54,9 @@ function AdminLogin() {
       alert("Login Successful");
 
       // Redirect
-
       navigate("/admin/dashboard");
 
     } catch (error) {
-
       console.error("Login error:", error);
 
       alert(
@@ -71,19 +65,14 @@ function AdminLogin() {
       );
 
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
   // ---------------- UI ----------------
 
   return (
-
     <section className="min-h-screen bg-slate-900 flex items-center justify-center px-6">
-
       <div className="bg-slate-800 p-8 rounded-2xl shadow-lg w-full max-w-md">
 
         <h2 className="text-3xl font-bold text-white text-center mb-8">
@@ -93,15 +82,12 @@ function AdminLogin() {
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* Email */}
-
           <div>
-
             <label className="text-gray-300 text-sm mb-2 block">
               Email
             </label>
 
             <div className="flex items-center bg-slate-900 border border-slate-700 rounded-lg px-3">
-
               <Mail size={18} className="text-gray-400" />
 
               <input
@@ -113,21 +99,16 @@ function AdminLogin() {
                 placeholder="Enter admin email"
                 className="w-full bg-transparent text-white p-3 outline-none"
               />
-
             </div>
-
           </div>
 
           {/* Password */}
-
           <div>
-
             <label className="text-gray-300 text-sm mb-2 block">
               Password
             </label>
 
             <div className="flex items-center bg-slate-900 border border-slate-700 rounded-lg px-3">
-
               <Lock size={18} className="text-gray-400" />
 
               <input
@@ -139,13 +120,10 @@ function AdminLogin() {
                 placeholder="Enter password"
                 className="w-full bg-transparent text-white p-3 outline-none"
               />
-
             </div>
-
           </div>
 
           {/* Button */}
-
           <button
             type="submit"
             disabled={loading}
@@ -157,11 +135,8 @@ function AdminLogin() {
         </form>
 
       </div>
-
     </section>
-
   );
-
 }
 
 export default AdminLogin;
