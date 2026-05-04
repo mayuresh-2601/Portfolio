@@ -112,7 +112,7 @@ app.use("/uploads", express.static(uploadsPath));
 
 /*
 ========================================
-TEST ROUTE (VERY IMPORTANT)
+TEST ROUTE
 ========================================
 */
 
@@ -142,8 +142,14 @@ const frontendPath = path.join(__dirname, "../dist");
 
 app.use(express.static(frontendPath));
 
-app.get("*", (req, res) => {
-  if (req.path.startsWith("/api")) return;
+/*
+🔥 FIXED ROUTING (NO "*")
+*/
+
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith("/api")) {
+    return next();
+  }
 
   res.sendFile(path.join(frontendPath, "index.html"));
 });
@@ -157,7 +163,7 @@ ERROR HANDLING
 app.use(notFound);
 
 app.use((err, req, res, next) => {
-  console.error("🔥 SERVER ERROR:", err); // IMPORTANT LOG
+  console.error("🔥 SERVER ERROR:", err);
   res.status(500).json({
     success: false,
     message: err.message || "Server Error"
@@ -166,7 +172,7 @@ app.use((err, req, res, next) => {
 
 /*
 ========================================
-SERVER START (FIXED FOR RENDER)
+SERVER START
 ========================================
 */
 
