@@ -5,13 +5,11 @@ import api from "../api/axios";
 
 function Skills() {
 
-  // ---------------- State ----------------
 
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ---------------- Load Skills ----------------
 
   useEffect(() => {
     loadSkills();
@@ -58,8 +56,6 @@ function Skills() {
 
   };
 
-  // ---------------- UI ----------------
-
   return (
 
     <section className="bg-slate-900 text-white py-20 px-6 min-h-screen">
@@ -70,7 +66,7 @@ function Skills() {
           My Skills
         </h2>
 
-        {/* Loading */}
+
 
         {loading && (
           <p className="text-center text-gray-400">
@@ -78,7 +74,7 @@ function Skills() {
           </p>
         )}
 
-        {/* Error */}
+
 
         {!loading && error && (
           <p className="text-center text-red-400">
@@ -86,7 +82,7 @@ function Skills() {
           </p>
         )}
 
-        {/* Empty */}
+
 
         {!loading &&
           !error &&
@@ -96,7 +92,7 @@ function Skills() {
             </p>
           )}
 
-        {/* Skills Grid */}
+
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
 

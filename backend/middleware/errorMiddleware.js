@@ -1,15 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-// ---------------- ERROR HANDLER ----------------
-
 export const errorHandler = (
   err,
   req,
   res,
   next
 ) => {
-
-  // Determine status code
 
   const statusCode =
     res.statusCode === 200
@@ -18,11 +14,8 @@ export const errorHandler = (
 
   res.status(statusCode);
 
-  // Log error in server
 
   console.error("Error:", err.message);
-
-  // Send response
 
   res.json({
 
@@ -32,7 +25,6 @@ export const errorHandler = (
       err.message ||
       "Internal Server Error",
 
-    // Show stack only in development
 
     stack:
       process.env.NODE_ENV ===
@@ -43,8 +35,6 @@ export const errorHandler = (
   });
 
 };
-
-// ---------------- 404 NOT FOUND ----------------
 
 export const notFound = (
   req,

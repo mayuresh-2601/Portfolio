@@ -1,12 +1,5 @@
 /* eslint-disable preserve-caught-error */
 import db from "../config/db.js";
-
-/*
-========================================
-GET ALL CERTIFICATES
-========================================
-*/
-
 export const getCertificates = async () => {
   try {
     const query = `
@@ -24,12 +17,6 @@ export const getCertificates = async () => {
     throw new Error(error.message || "Failed to fetch certificates");
   }
 };
-
-/*
-========================================
-GET CERTIFICATE BY ID
-========================================
-*/
 
 export const getCertificateById = async (id) => {
   try {
@@ -49,12 +36,6 @@ export const getCertificateById = async (id) => {
     throw new Error(error.message || "Failed to get certificate");
   }
 };
-
-/*
-========================================
-ADD CERTIFICATE
-========================================
-*/
 
 export const addCertificate = async (certificate) => {
   try {
@@ -85,12 +66,6 @@ export const addCertificate = async (certificate) => {
     throw new Error(error.message || "Failed to add certificate");
   }
 };
-
-/*
-========================================
-DELETE CERTIFICATE
-========================================
-*/
 
 export const deleteCertificate = async (id) => {
   try {

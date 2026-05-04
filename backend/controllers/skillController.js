@@ -4,12 +4,6 @@ import {
   deleteSkill
 } from "../models/skillModel.js";
 
-/*
-========================================
-GET ALL SKILLS
-========================================
-*/
-
 export const fetchSkills = async (req, res) => {
   try {
     console.log("fetchSkills called");
@@ -28,11 +22,6 @@ export const fetchSkills = async (req, res) => {
   }
 };
 
-/*
-========================================
-CREATE SKILL
-========================================
-*/
 
 export const createSkill = async (req, res) => {
   try {
@@ -40,20 +29,12 @@ export const createSkill = async (req, res) => {
 
     const { name, level } = req.body;
 
-    /*
-    VALIDATE NAME
-    */
-
     if (!name || !name.trim()) {
       return res.status(400).json({
         success: false,
         message: "Skill name is required"
       });
     }
-
-    /*
-    VALIDATE LEVEL
-    */
 
     let skillLevel = parseInt(level);
 
@@ -82,12 +63,6 @@ export const createSkill = async (req, res) => {
     });
   }
 };
-
-/*
-========================================
-DELETE SKILL
-========================================
-*/
 
 export const removeSkill = async (req, res) => {
   try {

@@ -6,9 +6,6 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
-
-/* NEW — CERTIFICATES */
-
 import Certificates from "./components/Certificates";
 
 import AdminLogin from "./admin/AdminLogin";
@@ -25,8 +22,6 @@ function App() {
 
   const location = useLocation();
 
-  // Hide Navbar & Footer on admin pages
-
   const isAdminRoute =
     location.pathname.startsWith("/admin");
 
@@ -34,17 +29,15 @@ function App() {
 
     <div className="min-h-screen flex flex-col bg-slate-900">
 
-      {/* Show Navbar only on public pages */}
+
 
       {!isAdminRoute && <Navbar />}
 
-      {/* Main Content */}
+  
 
       <main className="grow pt-20">
 
         <Routes>
-
-          {/* ---------------- PUBLIC ROUTES ---------------- */}
 
           <Route
             path="/"
@@ -66,8 +59,6 @@ function App() {
             element={<Projects />}
           />
 
-          {/* NEW — CERTIFICATES ROUTE */}
-
           <Route
             path="/certificates"
             element={<Certificates />}
@@ -78,14 +69,12 @@ function App() {
             element={<Contact />}
           />
 
-          {/* ---------------- ADMIN LOGIN ---------------- */}
 
           <Route
             path="/admin"
             element={<AdminLogin />}
           />
 
-          {/* ---------------- PROTECTED ADMIN DASHBOARD ---------------- */}
 
           <Route
             path="/admin/dashboard"
@@ -96,7 +85,6 @@ function App() {
             }
           />
 
-          {/* ---------------- 404 PAGE ---------------- */}
 
           <Route
             path="*"
@@ -118,8 +106,6 @@ function App() {
         </Routes>
 
       </main>
-
-      {/* Show Footer only on public pages */}
 
       {!isAdminRoute && <Footer />}
 

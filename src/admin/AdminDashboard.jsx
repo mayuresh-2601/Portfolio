@@ -40,9 +40,6 @@ function AdminDashboard() {
     window.location.href = "/";
   };
 
-  /*
-  ================= LOAD DATA
-  */
 
   const loadData = async () => {
 
@@ -71,10 +68,6 @@ function AdminDashboard() {
     }
 
   };
-
-  /*
-  ================= PROJECT
-  */
 
   const handleProjectChange = (e) => {
 
@@ -190,10 +183,6 @@ function AdminDashboard() {
 
   };
 
-  /*
-  ================= SKILL
-  */
-
   const addSkill = async () => {
 
     if (!skillName.trim())
@@ -221,10 +210,6 @@ function AdminDashboard() {
     loadData();
 
   };
-
-  /*
-  ================= CERTIFICATE
-  */
 
   const handleCertificateChange = (e) => {
 
@@ -352,8 +337,6 @@ function AdminDashboard() {
           </button>
 
         </div>
-
-        {/* 3 COLUMN GRID */}
 
         <div className="grid md:grid-cols-3 gap-10">
 

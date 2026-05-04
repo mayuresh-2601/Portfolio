@@ -1,7 +1,5 @@
 import db from "../config/db.js";
 
-// ---------------- FIND USER BY EMAIL ----------------
-
 export const findUserByEmail = async (email) => {
 
   if (!email) {
@@ -35,7 +33,6 @@ export const findUserByEmail = async (email) => {
 
 };
 
-// ---------------- CREATE USER ----------------
 
 export const createUser = async (user) => {
 

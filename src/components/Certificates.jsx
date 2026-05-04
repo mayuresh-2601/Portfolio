@@ -4,9 +4,6 @@ import api from "../api/axios";
 import { ExternalLink } from "lucide-react";
 
 function Certificates() {
-
-  // ---------------- STATE ----------------
-
   const [certificates, setCertificates] =
     useState([]);
 
@@ -16,7 +13,6 @@ function Certificates() {
   const [error, setError] =
     useState(null);
 
-  // ---------------- LOAD CERTIFICATES ----------------
 
   useEffect(() => {
 
@@ -72,7 +68,6 @@ function Certificates() {
 
     };
 
-  // ---------------- IMAGE URL HELPER ----------------
 
   const getImageUrl = (image) => {
 
@@ -94,7 +89,6 @@ function Certificates() {
 
   };
 
-  // ---------------- UI ----------------
 
   return (
 
@@ -110,7 +104,6 @@ function Certificates() {
 
         </h2>
 
-        {/* LOADING */}
 
         {loading && (
 
@@ -122,7 +115,6 @@ function Certificates() {
 
         )}
 
-        {/* ERROR */}
 
         {!loading && error && (
 
@@ -134,7 +126,6 @@ function Certificates() {
 
         )}
 
-        {/* EMPTY */}
 
         {!loading &&
           !error &&
@@ -148,7 +139,6 @@ function Certificates() {
 
           )}
 
-        {/* GRID */}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
@@ -169,7 +159,6 @@ function Certificates() {
                     className="bg-slate-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition"
                   >
 
-                    {/* IMAGE — CLICK TO OPEN */}
 
                     {imageUrl && (
 
@@ -191,7 +180,6 @@ function Certificates() {
 
                     )}
 
-                    {/* TITLE */}
 
                     <h3 className="text-xl font-semibold mb-2">
 
@@ -199,7 +187,6 @@ function Certificates() {
 
                     </h3>
 
-                    {/* ISSUER */}
 
                     {certificate.issuer && (
 
@@ -211,7 +198,6 @@ function Certificates() {
 
                     )}
 
-                    {/* LINK */}
 
                     {certificate.link && (
 

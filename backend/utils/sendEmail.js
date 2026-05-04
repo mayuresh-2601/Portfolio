@@ -20,14 +20,14 @@ const sendEmail = async (messageData) => {
       subject: `New Message from ${messageData.name}`,
 
       text: `
-Name: ${messageData.name}
-Email: ${messageData.email}
-Message: ${messageData.message}
-      `,
+          Name: ${messageData.name}
+          Email: ${messageData.email}
+          Message: ${messageData.message}
+          `,
 
       replyTo: messageData.email,
 
-      // ✅ FIXED ATTACHMENT
+      
       attachments: messageData.file
         ? [
             {

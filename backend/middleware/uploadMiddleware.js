@@ -5,39 +5,16 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 
-/*
-========================================
-RESOLVE DIRECTORY
-========================================
-*/
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/*
-========================================
-FIXED UPLOAD PATH (RENDER SAFE)
-========================================
-*/
-
 const uploadPath = path.join(process.cwd(), "backend", "uploads");
-
-/*
-========================================
-CREATE UPLOADS FOLDER IF MISSING
-========================================
-*/
 
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
   console.log("Uploads folder created at:", uploadPath);
 }
 
-/*
-========================================
-STORAGE CONFIG
-========================================
-*/
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -62,12 +39,6 @@ const storage = multer.diskStorage({
   }
 });
 
-/*
-========================================
-FILE FILTER
-========================================
-*/
-
 const fileFilter = (req, file, cb) => {
   try {
     console.log("File received:", file.originalname);
@@ -91,12 +62,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-/*
-========================================
-MULTER CONFIG
-========================================
-*/
-
 const upload = multer({
   storage,
   fileFilter,
@@ -105,11 +70,6 @@ const upload = multer({
   }
 });
 
-/*
-========================================
-SAFE WRAPPER (VERY IMPORTANT)
-========================================
-*/
 
 export const uploadSingle = (fieldName) => (req, res, next) => {
   const handler = upload.single(fieldName);

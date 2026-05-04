@@ -11,15 +11,12 @@ function Home() {
     >
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
 
-        {/* LEFT SIDE - TEXT */}
         <div className="text-center md:text-left">
 
-          {/* Greeting */}
           <p className="text-sky-400 font-medium mb-2">
             Hello, Welcome to my Portfolio
           </p>
 
-          {/* Name */}
           <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
             Hi, I'm{" "}
             <span className="bg-linear-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
@@ -27,12 +24,10 @@ function Home() {
             </span>
           </h1>
 
-          {/* Role */}
           <h2 className="text-xl md:text-2xl text-gray-300 mb-6">
             Full Stack Developer | React | Node.js | MySQL
           </h2>
 
-          {/* Description */}
           <p className="text-gray-400 text-lg mb-8">
             I am a passionate Full Stack Developer who loves building
             responsive and scalable web applications. I enjoy solving
@@ -40,7 +35,6 @@ function Home() {
             improving my skills in frontend and backend development.
           </p>
 
-          {/* Skills Highlights */}
           <div className="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
 
             <span className="bg-slate-800 px-4 py-2 rounded-full text-sm">
@@ -65,8 +59,6 @@ function Home() {
 
           </div>
 
-          {/* Buttons */}
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center md:justify-start">
 
             <Link
@@ -86,7 +78,6 @@ function Home() {
 
           </div>
 
-          {/* Social Icons */}
           <div className="flex gap-5 justify-center md:justify-start">
 
             <a
@@ -111,7 +102,6 @@ function Home() {
 
         </div>
 
-        {/* RIGHT SIDE - PROFILE IMAGE */}
         <div className="flex justify-center">
 
           <div className="relative">
@@ -122,7 +112,6 @@ function Home() {
               className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-full border-4 border-sky-500 shadow-lg"
             />
 
-            {/* Glow effect */}
             <div className="absolute inset-0 rounded-full bg-sky-500 blur-3xl opacity-20"></div>
 
           </div>

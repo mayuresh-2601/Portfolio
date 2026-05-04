@@ -8,10 +8,8 @@ function Footer() {
 
       <div className="max-w-7xl mx-auto px-6 py-10">
 
-        {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
 
-          {/* Name / Logo */}
           <div className="text-center md:text-left">
             <h2 className="text-2xl font-bold bg-linear-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
               Mayuresh Kasar
@@ -22,10 +20,8 @@ function Footer() {
             </p>
           </div>
 
-          {/* Social Icons */}
           <div className="flex gap-5">
 
-            {/* GitHub */}
             <a
               href="https://github.com/mayuresh-2601"
               target="_blank"
@@ -35,7 +31,6 @@ function Footer() {
               <GithubIcon size={20} />
             </a>
 
-            {/* LinkedIn */}
             <a
               href="https://www.linkedin.com/in/mayuresh2601/"
               target="_blank"
@@ -45,7 +40,6 @@ function Footer() {
               <LinkedinIcon size={20} />
             </a>
 
-            {/* Email */}
             <a
               href="mailto:kasarmayuresh99@gmail.com"
               className="p-3 bg-slate-800 rounded-full hover:bg-sky-500 transition duration-300"
@@ -57,10 +51,8 @@ function Footer() {
 
         </div>
 
-        {/* Divider */}
         <div className="border-t border-slate-700 my-6"></div>
 
-        {/* Bottom Section */}
         <div className="text-center text-sm text-gray-400 flex justify-center items-center gap-2">
 
           © {new Date().getFullYear()} Mayuresh Kasar Portfolio

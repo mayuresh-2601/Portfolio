@@ -1,12 +1,6 @@
 /* eslint-disable preserve-caught-error */
 import db from "../config/db.js";
 
-/*
-========================================
-ADD MESSAGE
-========================================
-*/
-
 export const addMessage = async (data) => {
   try {
     // ✅ SAFE INPUT (prevents undefined crash)
@@ -36,12 +30,6 @@ export const addMessage = async (data) => {
     throw new Error(error.message || "Failed to add message");
   }
 };
-
-/*
-========================================
-GET ALL MESSAGES
-========================================
-*/
 
 export const getMessages = async () => {
   try {

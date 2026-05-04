@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Full Stack Portfolio Backend API",
   "main": "server.js",
+  
   "type": "module",
   "private": true,
   "scripts": {

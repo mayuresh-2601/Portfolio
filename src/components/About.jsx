@@ -6,7 +6,6 @@ function About() {
     >
       <div className="max-w-6xl mx-auto">
 
-        {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           About{" "}
           <span className="bg-linear-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
@@ -16,7 +15,6 @@ function About() {
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
 
-          {/* LEFT SIDE — IMAGE */}
           <div className="flex justify-center">
             <img
              src="/Profile.png"
@@ -25,7 +23,6 @@ function About() {
             />
           </div>
 
-          {/* RIGHT SIDE — TEXT */}
           <div>
 
             <h3 className="text-2xl font-semibold mb-4">
@@ -46,7 +43,6 @@ function About() {
               I focus on writing clean, efficient, and maintainable code.
             </p>
 
-            {/* Info Grid */}
             <div className="grid grid-cols-2 gap-6 text-sm">
 
               <div>

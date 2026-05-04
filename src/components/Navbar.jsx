@@ -18,7 +18,6 @@ function Navbar() {
   const [isOpen, setIsOpen] =
     useState(false);
 
-  // Get token safely
 
   const token =
     localStorage.getItem("token");
@@ -29,7 +28,6 @@ function Navbar() {
 
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        {/* LOGO */}
 
         <Link
           to="/"
@@ -38,7 +36,6 @@ function Navbar() {
           MyPortfolio
         </Link>
 
-        {/* DESKTOP MENU */}
 
         <ul className="hidden md:flex items-center space-x-8 font-medium">
 
@@ -82,7 +79,6 @@ function Navbar() {
             </Link>
           </li>
 
-          {/* NEW — CERTIFICATES */}
 
           <li>
             <Link
@@ -104,7 +100,6 @@ function Navbar() {
             </Link>
           </li>
 
-          {/* ADMIN LINK */}
 
           {token && (
 
@@ -122,7 +117,6 @@ function Navbar() {
 
         </ul>
 
-        {/* MOBILE BUTTON */}
 
         <div className="md:hidden">
 
@@ -143,7 +137,6 @@ function Navbar() {
 
       </div>
 
-      {/* MOBILE MENU */}
 
       {isOpen && (
 
@@ -195,7 +188,6 @@ function Navbar() {
               </Link>
             </li>
 
-            {/* NEW — CERTIFICATES */}
 
             <li>
               <Link
@@ -219,7 +211,6 @@ function Navbar() {
               </Link>
             </li>
 
-            {/* ADMIN MOBILE */}
 
             {token && (
 

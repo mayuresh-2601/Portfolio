@@ -7,7 +7,6 @@ function AdminLogin() {
 
   const navigate = useNavigate();
 
-  // ---------------- State ----------------
 
   const [formData, setFormData] = useState({
     email: "",
@@ -16,7 +15,6 @@ function AdminLogin() {
 
   const [loading, setLoading] = useState(false);
 
-  // ---------------- Handle Input ----------------
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +25,6 @@ function AdminLogin() {
     });
   };
 
-  // ---------------- Handle Login ----------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +34,6 @@ function AdminLogin() {
 
       console.log("Sending login request...");
 
-      // ✅ FIXED HERE (REMOVED /api)
       const response = await api.post(
         "/auth/login",
         formData
@@ -45,7 +41,6 @@ function AdminLogin() {
 
       console.log("Login response:", response.data);
 
-      // Save token
       localStorage.setItem(
         "token",
         response.data.token
@@ -53,7 +48,6 @@ function AdminLogin() {
 
       alert("Login Successful");
 
-      // Redirect
       navigate("/admin/dashboard");
 
     } catch (error) {
@@ -69,7 +63,6 @@ function AdminLogin() {
     }
   };
 
-  // ---------------- UI ----------------
 
   return (
     <section className="min-h-screen bg-slate-900 flex items-center justify-center px-6">
@@ -81,7 +74,6 @@ function AdminLogin() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Email */}
           <div>
             <label className="text-gray-300 text-sm mb-2 block">
               Email
@@ -102,7 +94,6 @@ function AdminLogin() {
             </div>
           </div>
 
-          {/* Password */}
           <div>
             <label className="text-gray-300 text-sm mb-2 block">
               Password
@@ -123,7 +114,6 @@ function AdminLogin() {
             </div>
           </div>
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}

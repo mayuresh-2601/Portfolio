@@ -1,25 +1,16 @@
 /* eslint-disable no-undef */
 import jwt from "jsonwebtoken";
 
-// ---------------- PROTECT ROUTES ----------------
-
 export const protect = (req, res, next) => {
 
   try {
-
     let token;
-
-    // Check Authorization header
-
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith(
         "Bearer"
       )
     ) {
-
-      // Extract token
-
       token =
         req.headers.authorization.split(
           " "
@@ -27,7 +18,6 @@ export const protect = (req, res, next) => {
 
     }
 
-    // If token missing
 
     if (!token) {
 
@@ -37,14 +27,11 @@ export const protect = (req, res, next) => {
 
     }
 
-    // Verify token
-
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
 
-    // Attach user to request
 
     req.user = decoded;
 

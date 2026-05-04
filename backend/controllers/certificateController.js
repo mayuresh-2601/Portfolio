@@ -9,20 +9,7 @@ import {
   getCertificateById
 } from "../models/certificateModel.js";
 
-/*
-========================================
-FIX PATH FOR RENDER
-========================================
-*/
-
 const uploadsPath = path.join(process.cwd(), "backend", "uploads");
-
-/*
-========================================
-GET ALL CERTIFICATES
-========================================
-*/
-
 export const fetchCertificates = async (req, res) => {
   try {
     console.log("fetchCertificates called");
@@ -46,12 +33,6 @@ export const fetchCertificates = async (req, res) => {
     });
   }
 };
-
-/*
-========================================
-CREATE CERTIFICATE
-========================================
-*/
 
 export const createCertificate = async (req, res) => {
   try {
@@ -95,12 +76,6 @@ export const createCertificate = async (req, res) => {
   }
 };
 
-/*
-========================================
-DELETE CERTIFICATE
-========================================
-*/
-
 export const removeCertificate = async (req, res) => {
   try {
     console.log("removeCertificate called");
@@ -125,11 +100,6 @@ export const removeCertificate = async (req, res) => {
         message: "Certificate not found"
       });
     }
-
-    /*
-    DELETE IMAGE SAFELY
-    */
-
     if (certificate.image) {
       try {
         const filePath = path.join(uploadsPath, certificate.image);

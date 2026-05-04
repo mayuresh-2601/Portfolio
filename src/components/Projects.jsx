@@ -7,13 +7,11 @@ import { ExternalLink } from "lucide-react";
 
 function Projects() {
 
-  // ---------------- State ----------------
 
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ---------------- Load Projects ----------------
 
   useEffect(() => {
     loadProjects();
@@ -60,7 +58,6 @@ function Projects() {
 
   };
 
-  // ---------------- Helper ----------------
 
   const getImageUrl = (image) => {
 
@@ -70,7 +67,6 @@ function Projects() {
 
   };
 
-  // ---------------- UI ----------------
 
   return (
 
@@ -82,15 +78,12 @@ function Projects() {
           My Projects
         </h2>
 
-        {/* Loading */}
-
         {loading && (
           <p className="text-center text-gray-400">
             Loading projects...
           </p>
         )}
 
-        {/* Error */}
 
         {!loading && error && (
           <p className="text-center text-red-400">
@@ -98,7 +91,6 @@ function Projects() {
           </p>
         )}
 
-        {/* Empty */}
 
         {!loading &&
           !error &&
@@ -108,7 +100,6 @@ function Projects() {
             </p>
           )}
 
-        {/* Projects Grid */}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
@@ -121,19 +112,15 @@ function Projects() {
                 className="bg-slate-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition"
               >
 
-                {/* Title */}
 
                 <h3 className="text-xl font-semibold mb-3">
                   {project.title}
                 </h3>
 
-                {/* Description */}
 
                 <p className="text-gray-400 mb-4">
                   {project.description}
                 </p>
-
-                {/* Image */}
 
                 {project.image && (
 
@@ -145,7 +132,6 @@ function Projects() {
 
                 )}
 
-                {/* Buttons */}
 
                 <div className="flex gap-3">
 

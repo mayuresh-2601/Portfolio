@@ -12,19 +12,7 @@ import {
   getProjectById
 } from "../models/projectModel.js";
 
-/*
-========================================
-FIX PATH FOR RENDER
-========================================
-*/
-
 const uploadsPath = path.join(process.cwd(), "backend", "uploads");
-
-/*
-========================================
-GET ALL PROJECTS
-========================================
-*/
 
 export const fetchProjects = async (req, res) => {
   try {
@@ -38,11 +26,6 @@ export const fetchProjects = async (req, res) => {
   }
 };
 
-/*
-========================================
-CREATE PROJECT
-========================================
-*/
 
 export const createProject = async (req, res) => {
   try {
@@ -87,11 +70,6 @@ export const createProject = async (req, res) => {
   }
 };
 
-/*
-========================================
-UPDATE PROJECT
-========================================
-*/
 
 export const updateProjectById = async (req, res) => {
   try {
@@ -122,10 +100,6 @@ export const updateProjectById = async (req, res) => {
         message: "Project not found"
       });
     }
-
-    /*
-    DELETE OLD IMAGE SAFELY
-    */
 
     if (req.file && existingProject.image) {
       try {
@@ -164,12 +138,6 @@ export const updateProjectById = async (req, res) => {
   }
 };
 
-/*
-========================================
-DELETE PROJECT
-========================================
-*/
-
 export const removeProject = async (req, res) => {
   try {
     const { id } = req.params;
@@ -181,8 +149,6 @@ export const removeProject = async (req, res) => {
     }
 
     let project = await getProjectById(id);
-
-    // 🔥 FIX: handle array result
     if (Array.isArray(project)) {
       project = project[0];
     }
@@ -192,10 +158,6 @@ export const removeProject = async (req, res) => {
         message: "Project not found"
       });
     }
-
-    /*
-    DELETE IMAGE SAFELY
-    */
 
     if (project.image) {
       try {

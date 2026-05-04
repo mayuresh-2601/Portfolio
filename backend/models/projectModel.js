@@ -1,12 +1,6 @@
 /* eslint-disable preserve-caught-error */
 import db from "../config/db.js";
 
-/*
-========================================
-GET ALL PROJECTS
-========================================
-*/
-
 export const getAllProjects = async () => {
   try {
     const sql = `
@@ -25,11 +19,6 @@ export const getAllProjects = async () => {
   }
 };
 
-/*
-========================================
-GET PROJECT BY ID
-========================================
-*/
 
 export const getProjectById = async (id) => {
   try {
@@ -52,12 +41,6 @@ export const getProjectById = async (id) => {
     throw new Error(error.message || "Failed to fetch project");
   }
 };
-
-/*
-========================================
-ADD PROJECT
-========================================
-*/
 
 export const addProject = async (project) => {
   try {
@@ -90,12 +73,6 @@ export const addProject = async (project) => {
     throw new Error(error.message || "Failed to add project");
   }
 };
-
-/*
-========================================
-UPDATE PROJECT
-========================================
-*/
 
 export const updateProject = async (id, project) => {
   try {
@@ -132,12 +109,6 @@ export const updateProject = async (id, project) => {
     throw new Error(error.message || "Failed to update project");
   }
 };
-
-/*
-========================================
-DELETE PROJECT
-========================================
-*/
 
 export const deleteProject = async (id) => {
   try {

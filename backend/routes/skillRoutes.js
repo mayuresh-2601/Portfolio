@@ -3,7 +3,6 @@ import db from "../config/db.js";
 
 const router = express.Router();
 
-// ADD SKILL
 router.post("/", async (req, res) => {
   try {
     const { name, level } = req.body;
@@ -24,7 +23,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// GET SKILLS
+
 router.get("/", async (req, res) => {
   try {
     const [rows] = await db.execute("SELECT * FROM skills ORDER BY id DESC");
@@ -35,7 +34,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// DELETE SKILL
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;

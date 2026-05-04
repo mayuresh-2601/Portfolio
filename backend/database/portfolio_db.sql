@@ -2,7 +2,6 @@ CREATE DATABASE portfolio_db;
 
 USE portfolio_db;
 
--- Projects
 
 CREATE TABLE projects (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -14,7 +13,6 @@ CREATE TABLE projects (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Skills
 
 CREATE TABLE skills (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,7 +21,6 @@ CREATE TABLE skills (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Users
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +31,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Messages
 
 CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +40,6 @@ CREATE TABLE messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Certificates
 
 CREATE TABLE certificates (
 

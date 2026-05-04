@@ -1,11 +1,6 @@
 /* eslint-disable preserve-caught-error */
 import db from "../config/db.js";
 
-/*
-========================================
-ADD SKILL
-========================================
-*/
 
 export const addSkill = async (name, level = 80) => {
   try {
@@ -37,12 +32,6 @@ export const addSkill = async (name, level = 80) => {
   }
 };
 
-/*
-========================================
-GET ALL SKILLS
-========================================
-*/
-
 export const getSkills = async () => {
   try {
     const query = `
@@ -61,11 +50,6 @@ export const getSkills = async () => {
   }
 };
 
-/*
-========================================
-DELETE SKILL
-========================================
-*/
 
 export const deleteSkill = async (id) => {
   try {

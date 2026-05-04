@@ -10,29 +10,9 @@ import {
 import { protect } from "../middleware/authMiddleware.js";
 import { uploadSingle } from "../middleware/uploadMiddleware.js";
 
-/*
-========================================
-PROJECT ROUTES
-========================================
-*/
-
 const router = express.Router();
 
-/*
-========================================
-GET ALL PROJECTS (PUBLIC)
-GET /api/projects
-========================================
-*/
-
 router.get("/", fetchProjects);
-
-/*
-========================================
-CREATE PROJECT (PROTECTED)
-POST /api/projects
-========================================
-*/
 
 router.post(
   "/",
@@ -41,12 +21,6 @@ router.post(
   createProject
 );
 
-/*
-========================================
-UPDATE PROJECT (PROTECTED)
-PUT /api/projects/:id
-========================================
-*/
 
 router.put(
   "/:id",
@@ -55,12 +29,6 @@ router.put(
   updateProjectById
 );
 
-/*
-========================================
-DELETE PROJECT (PROTECTED)
-DELETE /api/projects/:id
-========================================
-*/
 
 router.delete(
   "/:id",
@@ -68,10 +36,5 @@ router.delete(
   removeProject
 );
 
-/*
-========================================
-EXPORT
-========================================
-*/
 
 export default router;

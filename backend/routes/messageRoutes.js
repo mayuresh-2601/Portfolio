@@ -13,23 +13,11 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-/*
-========================================
-ENSURE UPLOAD FOLDER EXISTS
-========================================
-*/
-
 const uploadPath = "backend/uploads";
 
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
-
-/*
-========================================
-MULTER CONFIG
-========================================
-*/
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -41,11 +29,6 @@ const storage = multer.diskStorage({
   }
 });
 
-/*
-========================================
-ALLOW MULTIPLE FILE TYPES
-========================================
-*/
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
@@ -71,12 +54,6 @@ const upload = multer({
   }
 });
 
-/*
-========================================
-POST MESSAGE (PUBLIC)
-========================================
-*/
-
 router.post(
   "/",
   (req, res, next) => {
@@ -90,12 +67,6 @@ router.post(
   },
   createMessage
 );
-
-/*
-========================================
-GET MESSAGES (ADMIN)
-========================================
-*/
 
 router.get("/", protect, fetchMessages);
 

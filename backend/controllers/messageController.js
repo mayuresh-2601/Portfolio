@@ -5,12 +5,6 @@ import {
 
 import sendEmail from "../utils/sendEmail.js";
 
-/*
-========================================
-CREATE MESSAGE
-========================================
-*/
-
 export const createMessage = async (req, res) => {
   try {
     console.log("📩 createMessage called");
@@ -22,9 +16,6 @@ export const createMessage = async (req, res) => {
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
-    /*
-    VALIDATION
-    */
 
     if (!name || !email || !message) {
       return res.status(400).json({
@@ -33,9 +24,6 @@ export const createMessage = async (req, res) => {
       });
     }
 
-    /*
-    SAVE MESSAGE
-    */
 
     await addMessage({
       name: name.trim(),
@@ -44,11 +32,6 @@ export const createMessage = async (req, res) => {
     });
 
     console.log("✅ Saved to database");
-
-    /*
-    SEND EMAIL WITH FILE
-    */
-
     try {
       await sendEmail({
         name,
@@ -62,11 +45,6 @@ export const createMessage = async (req, res) => {
     } catch (emailError) {
       console.warn("⚠ Email failed:", emailError.message);
     }
-
-    /*
-    SUCCESS
-    */
-
     return res.status(201).json({
       success: true,
       message: "Message sent successfully"
@@ -81,12 +59,6 @@ export const createMessage = async (req, res) => {
     });
   }
 };
-
-/*
-========================================
-GET ALL MESSAGES
-========================================
-*/
 
 export const fetchMessages = async (req, res) => {
   try {

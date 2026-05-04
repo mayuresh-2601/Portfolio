@@ -11,7 +11,6 @@ function Contact() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  /* ---------------- HANDLE INPUT ---------------- */
 
   const handleChange = (e) => {
     setForm({
@@ -20,7 +19,6 @@ function Contact() {
     });
   };
 
-  /* ---------------- HANDLE FILE ---------------- */
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -35,7 +33,6 @@ function Contact() {
     setFile(selectedFile);
   };
 
-  /* ---------------- SUBMIT FORM ---------------- */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,14 +46,13 @@ function Contact() {
       formData.append("email", form.email);
       formData.append("message", form.message);
 
-      // ✅ FIX: MUST MATCH BACKEND ("file")
       if (file) {
         formData.append("file", file);
       }
 
       await api.post("/messages", formData);
 
-      alert("Message sent successfully ✅");
+      alert("Message sent successfully ");
 
       setForm({
         name: "",
@@ -78,7 +74,6 @@ function Contact() {
     }
   };
 
-  /* ---------------- UI ---------------- */
 
   return (
     <section className="min-h-screen bg-[#0a1a33] flex items-center justify-center px-4 py-12">
@@ -94,7 +89,6 @@ function Contact() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Name */}
           <input
             type="text"
             name="name"
@@ -105,7 +99,6 @@ function Contact() {
             className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white"
           />
 
-          {/* Email */}
           <input
             type="email"
             name="email"
@@ -116,7 +109,6 @@ function Contact() {
             className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white"
           />
 
-          {/* Message */}
           <textarea
             name="message"
             placeholder="Your Message"
@@ -127,7 +119,6 @@ function Contact() {
             className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white"
           />
 
-          {/* File Upload */}
           <div>
             <label className="block text-gray-300 mb-2">
               Upload Files (PDF / DOC / DOCX / Image — Max 10MB)
@@ -147,7 +138,6 @@ function Contact() {
             )}
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
