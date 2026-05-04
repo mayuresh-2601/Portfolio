@@ -19,8 +19,8 @@ This project demonstrates a **real-world developer portfolio system** with the f
 
 ## 🚀 Live Demo
 
-Frontend:
-https://mayuresh-2601.github.io/Portfolio
+Render Live:
+https://mayuresh-portfolio-frt6.onrender.com/
 
 GitHub Repository:
 https://github.com/mayuresh-2601/Portfolio
@@ -205,69 +205,79 @@ Admin can:
 my-portfolio
 │
 ├── backend
-│   │
-│   ├── config
-│   │   └── db.js
-│   │
-│   ├── controllers
-│   │   ├── authController.js
-│   │   ├── projectController.js
-│   │   └── skillController.js
-│   │
-│   ├── database
-│   │   └── portfolio_db.sql
-│   │
-│   ├── middleware
-│   │   ├── authMiddleware.js
-│   │   ├── errorMiddleware.js
-│   │   └── uploadMiddleware.js
-│   │
-│   ├── models
-│   │   ├── projectModel.js
-│   │   ├── skillModel.js
-│   │   └── userModel.js
-│   │
-│   ├── routes
-│   │   ├── authRoutes.js
-│   │   ├── projectRoutes.js
-│   │   └── skillRoutes.js
-│   │
-│   ├── uploads
-│   │
-│   ├── .env
-│   ├── package.json
-│   ├── package-lock.json
-│   └── server.js
+│ │
+│ ├── config
+│ │ └── db.js
+│ │
+│ ├── controllers
+│ │ ├── authController.js
+│ │ ├── certificateController.js
+│ │ ├── messageController.js
+│ │ ├── projectController.js
+│ │ └── skillController.js
+│ │
+│ ├── database
+│ │ └── portfolio_db.sql
+│ │
+│ ├── middleware
+│ │ ├── authMiddleware.js
+│ │ ├── errorMiddleware.js
+│ │ └── uploadMiddleware.js
+│ │
+│ ├── models
+│ │ ├── certificateModel.js
+│ │ ├── messageModel.js
+│ │ ├── projectModel.js
+│ │ ├── skillModel.js
+│ │ └── userModel.js
+│ │
+│ ├── routes
+│ │ ├── authRoutes.js
+│ │ ├── certificateRoutes.js
+│ │ ├── messageRoutes.js
+│ │ ├── projectRoutes.js
+│ │ └── skillRoutes.js
+│ │
+│ ├── uploads
+│ │
+│ ├── utils
+│ │
+│ ├── package.json
+│ ├── package-lock.json
+│ └── server.js
+│
+├── dist
 │
 ├── public
 │
 ├── src
-│   │
-│   ├── admin
-│   │   ├── AdminDashboard.jsx
-│   │   ├── AdminLogin.jsx
-│   │   └── ProtectedRoute.jsx
-│   │
-│   ├── api
-│   │   └── axios.js
-│   │
-│   ├── assets
-│   │
-│   ├── components
-│   │   ├── About.jsx
-│   │   ├── Contact.jsx
-│   │   ├── Footer.jsx
-│   │   ├── Github.jsx
-│   │   ├── Home.jsx
-│   │   ├── Linkedin.jsx
-│   │   ├── Navbar.jsx
-│   │   ├── Projects.jsx
-│   │   └── Skills.jsx
-│   │
-│   ├── App.jsx
-│   ├── App.css
-│   ├── index.css
-│   └── main.jsx
+│ │
+│ ├── admin
+│ │ ├── AdminDashboard.jsx
+│ │ ├── AdminLogin.jsx
+│ │ └── ProtectedRoute.jsx
+│ │
+│ ├── api
+│ │ └── axios.js
+│ │
+│ ├── assets
+│ │
+│ ├── components
+│ │ ├── About.jsx
+│ │ ├── Certificates.jsx
+│ │ ├── Contact.jsx
+│ │ ├── Footer.jsx
+│ │ ├── Github.jsx
+│ │ ├── Home.jsx
+│ │ ├── Linkedin.jsx
+│ │ ├── Navbar.jsx
+│ │ ├── Projects.jsx
+│ │ └── Skills.jsx
+│ │
+│ ├── App.jsx
+│ ├── App.css
+│ ├── index.css
+│ └── main.jsx
 │
 ├── index.html
 ├── package.json
