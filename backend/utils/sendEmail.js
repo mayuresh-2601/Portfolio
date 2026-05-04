@@ -1,84 +1,50 @@
 /* eslint-disable no-undef */
 import nodemailer from "nodemailer";
-import path from "path";
 
-const sendEmail =
-  async (messageData) => {
+const sendEmail = async (messageData) => {
+  console.log("sendEmail function called");
 
-    console.log(
-      "sendEmail function called"
-    );
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
 
-    try {
+    const mailOptions = {
+      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
 
-      const transporter =
-        nodemailer.createTransport({
+      subject: `New Message from ${messageData.name}`,
 
-          service: "gmail",
-
-          auth: {
-            user:
-              process.env.EMAIL_USER,
-            pass:
-              process.env.EMAIL_PASS
-          }
-
-        });
-
-      const mailOptions = {
-
-        from:
-          `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-
-        to:
-          process.env.EMAIL_USER,
-
-        subject:
-          `New Message from ${messageData.name}`,
-
-        text: `
+      text: `
 Name: ${messageData.name}
 Email: ${messageData.email}
 Message: ${messageData.message}
-        `,
+      `,
 
-        replyTo:
-          messageData.email,
+      replyTo: messageData.email,
 
-        attachments:
-          messageData.file
-            ? [
-                {
-                  filename:
-                    messageData.file,
+      // ✅ FIXED ATTACHMENT
+      attachments: messageData.file
+        ? [
+            {
+              filename: messageData.file.originalname, // correct name
+              path: messageData.file.path // correct full path
+            }
+          ]
+        : []
+    };
 
-                  path:
-                    path.join(
-                      "uploads",
-                      messageData.file
-                    )
-                }
-              ]
-            : []
+    await transporter.sendMail(mailOptions);
 
-      };
+    console.log("✅ Email sent with attachment");
 
-      await transporter
-        .sendMail(mailOptions);
-
-      console.log(
-        "Email sent successfully"
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Email error:",
-        error
-      );
-
-    }
-
-  };
+  } catch (error) {
+    console.error("❌ Email error:", error);
+  }
+};
 
 export default sendEmail;

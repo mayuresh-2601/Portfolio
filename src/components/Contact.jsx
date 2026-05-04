@@ -2,7 +2,6 @@ import { useState } from "react";
 import api from "../api/axios";
 
 function Contact() {
-
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -10,52 +9,38 @@ function Contact() {
   });
 
   const [file, setFile] = useState(null);
-
   const [loading, setLoading] = useState(false);
 
   /* ---------------- HANDLE INPUT ---------------- */
 
   const handleChange = (e) => {
-
     setForm({
       ...form,
       [e.target.name]: e.target.value
     });
-
   };
 
   /* ---------------- HANDLE FILE ---------------- */
 
   const handleFileChange = (e) => {
-
     const selectedFile = e.target.files[0];
-
     if (!selectedFile) return;
 
-    /* File size validation (10MB) */
-
     if (selectedFile.size > 10 * 1024 * 1024) {
-
       alert("File size must be less than 10MB");
-
       e.target.value = "";
-
       return;
-
     }
 
     setFile(selectedFile);
-
   };
 
   /* ---------------- SUBMIT FORM ---------------- */
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     try {
-
       setLoading(true);
 
       const formData = new FormData();
@@ -64,26 +49,14 @@ function Contact() {
       formData.append("email", form.email);
       formData.append("message", form.message);
 
+      // ✅ FIX: MUST MATCH BACKEND ("file")
       if (file) {
-
         formData.append("file", file);
-
       }
 
-      await api.post(
-        "/messages",
-        formData,
-        {
-          headers: {
-            "Content-Type":
-              "multipart/form-data"
-          }
-        }
-      );
+      await api.post("/messages", formData);
 
-      alert("Message sent successfully");
-
-      /* Reset form */
+      alert("Message sent successfully ✅");
 
       setForm({
         name: "",
@@ -94,28 +67,21 @@ function Contact() {
       setFile(null);
 
     } catch (error) {
-
       console.error(error);
 
       alert(
         error.response?.data?.message ||
         "Failed to send message"
       );
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
   /* ---------------- UI ---------------- */
 
   return (
-
     <section className="min-h-screen bg-[#0a1a33] flex items-center justify-center px-4 py-12">
-
       <div className="w-full max-w-2xl bg-[#0f2a4a] p-8 rounded-xl shadow-xl border border-gray-700">
 
         <h2 className="text-3xl font-bold text-center text-cyan-400 mb-2">
@@ -123,16 +89,12 @@ function Contact() {
         </h2>
 
         <p className="text-center text-gray-400 mb-6">
-          Send message or upload resume
+          Send message or upload document
         </p>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
 
           {/* Name */}
-
           <input
             type="text"
             name="name"
@@ -140,11 +102,10 @@ function Contact() {
             value={form.name}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white focus:outline-none focus:border-cyan-400 transition"
+            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white"
           />
 
           {/* Email */}
-
           <input
             type="email"
             name="email"
@@ -152,11 +113,10 @@ function Contact() {
             value={form.email}
             onChange={handleChange}
             required
-            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white focus:outline-none focus:border-cyan-400 transition"
+            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white"
           />
 
           {/* Message */}
-
           <textarea
             name="message"
             placeholder="Your Message"
@@ -164,81 +124,43 @@ function Contact() {
             onChange={handleChange}
             required
             rows="5"
-            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white focus:outline-none focus:border-cyan-400 transition"
+            className="w-full p-3 rounded-lg bg-[#0a1a33] border border-gray-600 text-white"
           />
 
           {/* File Upload */}
-
           <div>
-
             <label className="block text-gray-300 mb-2">
-              Upload Resume
-              <span className="text-gray-400 text-sm ml-1">
-                (PDF / DOC / DOCX — Max 10MB)
-              </span>
+              Upload Files (PDF / DOC / DOCX / Image — Max 10MB)
             </label>
 
             <input
               type="file"
-              accept=".pdf,.doc,.docx"
+              accept=".pdf,.doc,.docx,.jpg,.png"
               onChange={handleFileChange}
-              className="
-                w-full
-                text-sm
-                text-gray-300
-                border
-                border-gray-600
-                rounded-lg
-                cursor-pointer
-                bg-[#0a1a33]
-
-                file:mr-4
-                file:py-2
-                file:px-4
-                file:rounded-lg
-                file:border-0
-                file:text-sm
-                file:font-semibold
-                file:bg-cyan-500
-                file:text-black
-                hover:file:bg-cyan-600
-              "
+              className="w-full text-gray-300 border border-gray-600 rounded-lg bg-[#0a1a33]"
             />
 
             {file && (
-
               <p className="text-green-400 text-sm mt-2">
-
                 Selected: {file.name}
-
               </p>
-
             )}
-
           </div>
 
-          {/* Submit Button */}
-
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-500 text-black font-semibold py-3 rounded-lg transition"
+            className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold py-3 rounded-lg"
           >
-
-            {loading
-              ? "Sending..."
-              : "Send Message"}
-
+            {loading ? "Sending..." : "Send Message"}
           </button>
 
         </form>
 
       </div>
-
     </section>
-
   );
-
 }
 
 export default Contact;

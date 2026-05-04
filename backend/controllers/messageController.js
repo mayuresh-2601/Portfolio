@@ -15,7 +15,6 @@ export const createMessage = async (req, res) => {
   try {
     console.log("📩 createMessage called");
 
-    // ✅ SAFE BODY ACCESS (NO CRASH)
     const name = req.body?.name;
     const email = req.body?.email;
     const message = req.body?.message;
@@ -47,17 +46,18 @@ export const createMessage = async (req, res) => {
     console.log("✅ Saved to database");
 
     /*
-    SEND EMAIL (SAFE)
+    SEND EMAIL WITH FILE
     */
 
     try {
       await sendEmail({
         name,
         email,
-        message
+        message,
+        file: req.file // 🔥 THIS WAS MISSING
       });
 
-      console.log("✅ Email sent");
+      console.log("✅ Email sent with attachment");
 
     } catch (emailError) {
       console.warn("⚠ Email failed:", emailError.message);
