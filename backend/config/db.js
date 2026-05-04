@@ -9,14 +9,13 @@ dotenv.config();
 const requiredEnv = [
   "DB_HOST",
   "DB_USER",
-  "DB_NAME"
+  "DB_NAME",
+  "DB_PORT" // IMPORTANT
 ];
 
 requiredEnv.forEach((key) => {
   if (!process.env[key]) {
-    console.error(
-      `Missing environment variable: ${key}`
-    );
+    console.error(`Missing environment variable: ${key}`);
     process.exit(1);
   }
 });
@@ -29,10 +28,11 @@ const db = mysql.createPool({
 
   user: process.env.DB_USER,
 
-  password:
-    process.env.DB_PASSWORD || "",
+  password: process.env.DB_PASSWORD || "",
 
   database: process.env.DB_NAME,
+
+  port: process.env.DB_PORT, // 🔥 THIS FIXES YOUR ISSUE
 
   waitForConnections: true,
 
@@ -48,21 +48,15 @@ const testConnection = async () => {
 
   try {
 
-    const connection =
-      await db.getConnection();
+    const connection = await db.getConnection();
 
-    console.log(
-      "MySQL Connected Successfully"
-    );
+    console.log("MySQL Connected Successfully");
 
     connection.release();
 
   } catch (error) {
 
-    console.error(
-      "Database connection failed:",
-      error.message
-    );
+    console.error("Database connection failed:", error.message);
 
     process.exit(1);
 
