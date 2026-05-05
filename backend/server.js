@@ -76,9 +76,12 @@ const frontendPath = path.join(__dirname, "../dist");
 if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
 
-  
   app.use((req, res, next) => {
-    if (req.originalUrl.startsWith("/api")) {
+    // ✅ FIX: allow uploads also
+    if (
+      req.originalUrl.startsWith("/api") ||
+      req.originalUrl.startsWith("/uploads")
+    ) {
       return next();
     }
 

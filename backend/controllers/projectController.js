@@ -1,8 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 
 import {
   getAllProjects,
@@ -11,8 +6,6 @@ import {
   updateProject,
   getProjectById
 } from "../models/projectModel.js";
-
-const uploadsPath = path.join(process.cwd(), "backend", "uploads");
 
 export const fetchProjects = async (req, res) => {
   try {
@@ -26,11 +19,8 @@ export const fetchProjects = async (req, res) => {
   }
 };
 
-
 export const createProject = async (req, res) => {
   try {
-    console.log("createProject called");
-
     const { title, description, github, demo } = req.body;
 
     if (!title || !description) {
@@ -50,7 +40,7 @@ export const createProject = async (req, res) => {
       description: description.trim(),
       github: github || "",
       demo: demo || "",
-      image: req.file.filename
+      image: req.file.path 
     };
 
     const result = await addProject(project);
@@ -63,13 +53,11 @@ export const createProject = async (req, res) => {
 
   } catch (error) {
     console.error("Create project error:", error);
-
     return res.status(500).json({
       message: error.message || "Failed to add project"
     });
   }
 };
-
 
 export const updateProjectById = async (req, res) => {
   try {
@@ -82,15 +70,7 @@ export const updateProjectById = async (req, res) => {
       });
     }
 
-    if (!title || !description) {
-      return res.status(400).json({
-        message: "Title and description are required"
-      });
-    }
-
     let existingProject = await getProjectById(id);
-
-    // 🔥 FIX: handle array result
     if (Array.isArray(existingProject)) {
       existingProject = existingProject[0];
     }
@@ -101,25 +81,12 @@ export const updateProjectById = async (req, res) => {
       });
     }
 
-    if (req.file && existingProject.image) {
-      try {
-        const oldFilePath = path.join(uploadsPath, existingProject.image);
-
-        if (fs.existsSync(oldFilePath)) {
-          fs.unlinkSync(oldFilePath);
-          console.log("Deleted old image:", existingProject.image);
-        }
-      } catch (err) {
-        console.warn("Image delete failed:", err.message);
-      }
-    }
-
     const project = {
       title: title.trim(),
       description: description.trim(),
       github: github || "",
       demo: demo || "",
-      image: req.file ? req.file.filename : existingProject.image
+      image: req.file ? req.file.path : existingProject.image 
     };
 
     await updateProject(id, project);
@@ -131,7 +98,6 @@ export const updateProjectById = async (req, res) => {
 
   } catch (error) {
     console.error("Update project error:", error);
-
     return res.status(500).json({
       message: error.message || "Failed to update project"
     });
@@ -141,12 +107,6 @@ export const updateProjectById = async (req, res) => {
 export const removeProject = async (req, res) => {
   try {
     const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        message: "Project ID is required"
-      });
-    }
 
     let project = await getProjectById(id);
     if (Array.isArray(project)) {
@@ -159,19 +119,6 @@ export const removeProject = async (req, res) => {
       });
     }
 
-    if (project.image) {
-      try {
-        const filePath = path.join(uploadsPath, project.image);
-
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-          console.log("Deleted project image:", project.image);
-        }
-      } catch (err) {
-        console.warn("Delete image failed:", err.message);
-      }
-    }
-
     await deleteProject(id);
 
     return res.status(200).json({
@@ -181,7 +128,6 @@ export const removeProject = async (req, res) => {
 
   } catch (error) {
     console.error("Delete project error:", error);
-
     return res.status(500).json({
       message: error.message || "Failed to delete project"
     });
