@@ -1,4 +1,3 @@
-
 import {
   getAllProjects,
   addProject,
@@ -7,6 +6,7 @@ import {
   getProjectById
 } from "../models/projectModel.js";
 
+// ================= GET =================
 export const fetchProjects = async (req, res) => {
   try {
     const projects = await getAllProjects();
@@ -19,6 +19,7 @@ export const fetchProjects = async (req, res) => {
   }
 };
 
+// ================= CREATE =================
 export const createProject = async (req, res) => {
   try {
     const { title, description, github, demo } = req.body;
@@ -35,20 +36,23 @@ export const createProject = async (req, res) => {
       });
     }
 
+    // ✅ IMPORTANT: multer-storage-cloudinary already uploaded it
+    const imageUrl = req.file.path; // secure_url
+
     const project = {
       title: title.trim(),
       description: description.trim(),
       github: github || "",
       demo: demo || "",
-      image: req.file.path 
+      image: imageUrl
     };
 
-    const result = await addProject(project);
+    const dbResult = await addProject(project);
 
     return res.status(201).json({
       success: true,
       message: "Project added successfully",
-      id: result?.insertId || null
+      id: dbResult?.insertId || null
     });
 
   } catch (error) {
@@ -59,6 +63,7 @@ export const createProject = async (req, res) => {
   }
 };
 
+// ================= UPDATE =================
 export const updateProjectById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -81,12 +86,19 @@ export const updateProjectById = async (req, res) => {
       });
     }
 
+    let imageUrl = existingProject.image;
+
+    // ✅ only update if new image uploaded
+    if (req.file) {
+      imageUrl = req.file.path; // already cloudinary URL
+    }
+
     const project = {
       title: title.trim(),
       description: description.trim(),
       github: github || "",
       demo: demo || "",
-      image: req.file ? req.file.path : existingProject.image 
+      image: imageUrl
     };
 
     await updateProject(id, project);
@@ -104,6 +116,7 @@ export const updateProjectById = async (req, res) => {
   }
 };
 
+// ================= DELETE =================
 export const removeProject = async (req, res) => {
   try {
     const { id } = req.params;

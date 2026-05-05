@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
-import fs from "fs";
 import helmet from "helmet";
 import morgan from "morgan";
 import { fileURLToPath } from "url";
@@ -16,50 +15,58 @@ import skillRoutes from "./routes/skillRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
 
-import {
-  errorHandler,
-  notFound
-} from "./middleware/errorMiddleware.js";
-
+import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 
 const app = express();
 
-
+// ✅ Fix __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const uploadsPath = path.join(__dirname, "uploads");
-
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true });
-  console.log("Uploads folder created");
-}
-
-
+// ================= SECURITY =================
 app.use(
   helmet({
-    crossOriginResourcePolicy: {
-      policy: "cross-origin"
-    }
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https://res.cloudinary.com",
+          "https://*.cloudinary.com",
+        ],
+
+        // ✅ FIX: allow API calls
+        connectSrc: [
+          "'self'",
+          "http://localhost:5000",
+          "https://mayuresh-portfolio-frt6.onrender.com",
+        ],
+
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+      },
+    },
   })
 );
-
-
+// ================= MIDDLEWARE =================
 app.use(morgan("dev"));
 
 app.use(
   cors({
     origin: true,
-    credentials: true
+    credentials: true,
   })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use("/uploads", express.static(uploadsPath));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "API WORKING ✅" });
@@ -71,17 +78,14 @@ app.use("/api/skills", skillRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/certificates", certificateRoutes);
 
+// ================= FRONTEND =================
 const frontendPath = path.join(__dirname, "../dist");
 
-if (fs.existsSync(frontendPath)) {
+if (process.env.NODE_ENV === "production" && frontendPath) {
   app.use(express.static(frontendPath));
 
   app.use((req, res, next) => {
-    // ✅ FIX: allow uploads also
-    if (
-      req.originalUrl.startsWith("/api") ||
-      req.originalUrl.startsWith("/uploads")
-    ) {
+    if (req.originalUrl.startsWith("/api")) {
       return next();
     }
 
@@ -89,20 +93,20 @@ if (fs.existsSync(frontendPath)) {
   });
 }
 
+// ================= ERROR =================
 app.use(notFound);
-
 app.use(errorHandler);
 
+// ================= START =================
 const startServer = async () => {
   try {
     await db.execute("SELECT 1");
-    console.log("MySQL Connected");
+    console.log("✅ MySQL Connected");
 
     const PORT = process.env.PORT || 5000;
 
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Uploads path: ${uploadsPath}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
 
   } catch (error) {

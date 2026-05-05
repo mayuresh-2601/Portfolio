@@ -1,182 +1,133 @@
 /* eslint-disable react-hooks/immutability */
-
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import Github from "./Github";
 import { ExternalLink } from "lucide-react";
 
 function Projects() {
-
-
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
 
   useEffect(() => {
     loadProjects();
   }, []);
 
   const loadProjects = async () => {
-
     try {
-
       setLoading(true);
-      setError(null);
+      const res = await api.get("/projects");
 
-      const response = await api.get(
-        "/projects"
-      );
+      console.log("PROJECT DATA:", res.data);
 
-      if (!response || !response.data) {
-        throw new Error(
-          "Invalid response from server"
-        );
-      }
-
-      setProjects(response.data);
-
-      console.log("Projects loaded");
-
+      setProjects(res.data);
     } catch (err) {
-
-      console.error(
-        "Error fetching projects:",
-        err
-      );
-
-      setError(
-        err.response?.data?.message ||
-        "Failed to load projects"
-      );
-
+      console.error(err);
+      setError("Failed to load projects");
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
+const getImageUrl = (image) => {
+  if (!image) return null;
 
-  const getImageUrl = (image) => {
+  const clean = image.trim();
 
-    if (!image) return null;
+  // 🔥 REMOVE WRONG PREFIX IF EXISTS
+  if (clean.includes("/uploads/http")) {
+    return clean.replace("/uploads/", "");
+  }
 
-    return `http://localhost:5000/uploads/${image}`;
+  // ✅ ALWAYS return Cloudinary directly
+  if (clean.startsWith("http")) {
+    return clean;
+  }
 
-  };
-
-
+  return null;
+};
   return (
-
     <section className="bg-slate-900 text-white py-20 px-6 min-h-screen">
-
       <div className="max-w-6xl mx-auto">
 
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 className="text-3xl font-bold text-center mb-12">
           My Projects
         </h2>
 
         {loading && (
-          <p className="text-center text-gray-400">
-            Loading projects...
-          </p>
+          <p className="text-center text-gray-400">Loading...</p>
         )}
 
-
-        {!loading && error && (
-          <p className="text-center text-red-400">
-            {error}
-          </p>
+        {error && (
+          <p className="text-center text-red-400">{error}</p>
         )}
-
-
-        {!loading &&
-          !error &&
-          projects.length === 0 && (
-            <p className="text-center text-gray-400">
-              No projects found.
-            </p>
-          )}
-
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          {!loading &&
-            !error &&
-            projects.map((project) => (
+          {projects.map((project) => {
+            const imageUrl = getImageUrl(project.image);
 
+            console.log("FINAL IMAGE URL:", imageUrl);
+
+            return (
               <div
                 key={project.id}
-                className="bg-slate-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition"
+                className="bg-slate-800 p-6 rounded-2xl shadow-lg"
               >
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={project.title}
+                    className="w-full h-40 object-cover rounded mb-4"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-40 bg-gray-700 rounded mb-4 flex items-center justify-center">
+                    No Image
+                  </div>
+                )}
 
-
-                <h3 className="text-xl font-semibold mb-3">
+                <h3 className="text-xl font-semibold">
                   {project.title}
                 </h3>
-
 
                 <p className="text-gray-400 mb-4">
                   {project.description}
                 </p>
 
-                {project.image && (
-
-                  <img
-                    src={getImageUrl(project.image)}
-                    alt={project.title}
-                    className="w-full h-40 object-cover rounded mb-4"
-                  />
-
-                )}
-
-
                 <div className="flex gap-3">
-
                   {project.github && (
-
                     <a
                       href={project.github}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-slate-700 rounded hover:bg-slate-600 transition"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 hover:text-blue-400"
                     >
-                      <Github size={16} />
-                      Code
+                      <Github size={16} /> Code
                     </a>
-
                   )}
 
                   {project.demo && (
-
                     <a
                       href={project.demo}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 border border-sky-500 rounded hover:bg-sky-500 transition"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 hover:text-green-400"
                     >
-                      <ExternalLink size={16} />
-                      Live
+                      <ExternalLink size={16} /> Live
                     </a>
-
                   )}
-
                 </div>
-
               </div>
-
-            ))}
+            );
+          })}
 
         </div>
-
       </div>
-
     </section>
-
   );
-
 }
 
 export default Projects;

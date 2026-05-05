@@ -1,11 +1,11 @@
 import axios from "axios";
 
 const API_URL =
-  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API_URL?.replace(/\/$/, "") ||
   "http://localhost:5000";
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`, // ONLY HERE
+  baseURL: `${API_URL}/api`,
   withCredentials: true,
 });
 
@@ -16,7 +16,9 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  if (!(config.data instanceof FormData)) {
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  } else {
     config.headers["Content-Type"] = "application/json";
   }
 
@@ -30,6 +32,7 @@ api.interceptors.response.use(
       localStorage.removeItem("token");
       window.location.href = "/admin";
     }
+
     return Promise.reject(err);
   }
 );

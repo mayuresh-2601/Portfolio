@@ -15,7 +15,7 @@ router.get("/", fetchCertificates);
 router.post(
   "/",
   protect,
-  uploadSingle("image"), // 🔥 SAFE multer handler
+  uploadSingle("image"), 
   createCertificate
 );
 
