@@ -29,10 +29,7 @@ function Home() {
           </h2>
 
           <p className="text-gray-400 text-lg mb-8">
-            I am a passionate Full Stack Developer who loves building
-            responsive and scalable web applications. I enjoy solving
-            real-world problems using modern technologies and continuously
-            improving my skills in frontend and backend development.
+            Passionate Full Stack Developer focused on building responsive, scalable, and user-centric web applications. Skilled in developing modern frontend interfaces and robust backend systems using technologies like React, Node.js, Express, and MySQL. Dedicated to writing clean, maintainable code and continuously improving through real-world projects and emerging technologies.
           </p>
 
           <div className="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">

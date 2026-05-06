@@ -30,17 +30,15 @@ function About() {
             </h3>
 
             <p className="text-gray-400 mb-6 leading-relaxed">
-              I am a passionate Full Stack Developer with strong interest in
-              building responsive and scalable web applications. I enjoy
-              solving real-world problems using modern technologies like
-              React, Node.js, and MySQL. I continuously learn new tools and
-              frameworks to improve my development skills.
+              Passionate Full Stack Developer dedicated to building modern, responsive, and scalable web applications. Skilled in developing intuitive frontend interfaces and robust backend systems using technologies like React, Node.js, Express, and MySQL.
             </p>
 
             <p className="text-gray-400 mb-8 leading-relaxed">
-              My goal is to become a professional software developer and
-              contribute to innovative projects that make a positive impact.
-              I focus on writing clean, efficient, and maintainable code.
+              I enjoy solving real-world problems through clean architecture, efficient code, and user-focused design. Constantly exploring new tools, frameworks, and best practices to enhance my development skills and stay updated with modern web technologies.
+            </p>
+
+            <p className="text-gray-400 mb-8 leading-relaxed">
+              Driven by continuous learning and innovation, my goal is to contribute to impactful software solutions while growing as a professional developer in the tech industry.
             </p>
 
             <div className="grid grid-cols-2 gap-6 text-sm">
