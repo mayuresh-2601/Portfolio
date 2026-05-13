@@ -28,9 +28,7 @@ https://github.com/mayuresh-2601/Portfolio
 ---
 ## 📘 Technical Documentation
 
-Complete developer documentation is available here:
-
-[📄 Open Technical Documentation](./TECHNICAL_DOCUMENTATION.md)
+Complete developer documentation is available here: [📄 Open Technical Documentation](./TECHNICAL_DOCUMENTATION.md)
 
 ---
 ## 📌 Project Overview
