@@ -202,89 +202,94 @@ Admin can:
 
 ```
 
-my-portfolio
+MY-PORTFOLIO/
 │
-├── backend
-│ │
-│ ├── config
-│ │ └── db.js
-│ │
-│ ├── controllers
-│ │ ├── authController.js
-│ │ ├── certificateController.js
-│ │ ├── messageController.js
-│ │ ├── projectController.js
-│ │ └── skillController.js
-│ │
-│ ├── database
-│ │ └── portfolio_db.sql
-│ │
-│ ├── middleware
-│ │ ├── authMiddleware.js
-│ │ ├── errorMiddleware.js
-│ │ └── uploadMiddleware.js
-│ │
-│ ├── models
-│ │ ├── certificateModel.js
-│ │ ├── messageModel.js
-│ │ ├── projectModel.js
-│ │ ├── skillModel.js
-│ │ └── userModel.js
-│ │
-│ ├── routes
-│ │ ├── authRoutes.js
-│ │ ├── certificateRoutes.js
-│ │ ├── messageRoutes.js
-│ │ ├── projectRoutes.js
-│ │ └── skillRoutes.js
-│ │
-│ ├── uploads
-│ │
-│ ├── utils
-│ │
-│ ├── package.json
-│ ├── package-lock.json
-│ └── server.js
+├── backend/
+│   │
+│   ├── config/
+│   │   ├── cloudinary.js
+│   │   └── db.js
+│   │
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── certificateController.js
+│   │   ├── messageController.js
+│   │   ├── projectController.js
+│   │   └── skillController.js
+│   │
+│   ├── database/
+│   │   └── portfolio_db.sql
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   └── uploadMiddleware.js
+│   │
+│   ├── models/
+│   │   ├── certificateModel.js
+│   │   ├── messageModel.js
+│   │   ├── projectModel.js
+│   │   ├── skillModel.js
+│   │   └── userModel.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── certificateRoutes.js
+│   │   ├── messageRoutes.js
+│   │   ├── projectRoutes.js
+│   │   └── skillRoutes.js
+│   │
+│   ├── uploads/
+│   │
+│   ├── utils/
+│   │   └── sendEmail.js
+│   │
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
 │
-├── dist
+├── dist/
 │
-├── public
+├── public/
+│   ├── About.png
+│   ├── Admin.png
+│   ├── AdminHome.png
+│   ├── Contact.png
+│   ├── Home.png
+│   ├── Login.png
+│   ├── Profile.png
+│   └── Mayuresh_Kasar_Resume.pdf
 │
-├── src
-│ │
-│ ├── admin
-│ │ ├── AdminDashboard.jsx
-│ │ ├── AdminLogin.jsx
-│ │ └── ProtectedRoute.jsx
-│ │
-│ ├── api
-│ │ └── axios.js
-│ │
-│ ├── assets
-│ │
-│ ├── components
-│ │ ├── About.jsx
-│ │ ├── Certificates.jsx
-│ │ ├── Contact.jsx
-│ │ ├── Footer.jsx
-│ │ ├── Github.jsx
-│ │ ├── Home.jsx
-│ │ ├── Linkedin.jsx
-│ │ ├── Navbar.jsx
-│ │ ├── Projects.jsx
-│ │ └── Skills.jsx
-│ │
-│ ├── App.jsx
-│ ├── App.css
-│ ├── index.css
-│ └── main.jsx
+├── src/
+│   │
+│   ├── admin/
+│   │   ├── AdminDashboard.jsx
+│   │   ├── AdminLogin.jsx
+│   │   └── ProtectedRoute.jsx
+│   │
+│   ├── api/
+│   │   └── axios.js
+│   │
+│   ├── components/
+│   │   ├── About.jsx
+│   │   ├── Certificates.jsx
+│   │   ├── Contact.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Github.jsx
+│   │   ├── Home.jsx
+│   │   ├── Linkedin.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── Projects.jsx
+│   │   └── Skills.jsx
+│   │
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   └── main.jsx
 │
-├── index.html
 ├── package.json
-├── package-lock.json
 ├── vite.config.js
-├── README.md
-└── .gitignore
+└── README.md
 
 ```
 ---
