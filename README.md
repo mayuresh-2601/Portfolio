@@ -26,7 +26,13 @@ GitHub Repository:
 https://github.com/mayuresh-2601/Portfolio
 
 ---
+## 📘 Technical Documentation
 
+Complete developer documentation is available here:
+
+[📄 Open Technical Documentation](./TECHNICAL_DOCUMENTATION.md)
+
+---
 ## 📌 Project Overview
 
 This application represents a **modern full stack developer portfolio system** that allows users and administrators to interact with portfolio data dynamically.
